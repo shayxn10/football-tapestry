@@ -1,26 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Dashboard } from "@/components/dashboard/Dashboard";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "FIFA World Cup Analytics — 1930 to 2022" },
+      { name: "description", content: "Interactive FIFA World Cup analytics dashboard: 90+ years of goal data, Qatar 2022 tactical breakdown, and the key insights that predict scoring." },
+      { property: "og:title", content: "FIFA World Cup Analytics Dashboard" },
+      { property: "og:description", content: "Historical goal patterns and tactical analysis from every World Cup, 1930–2022." },
+    ],
+  }),
+  component: Dashboard,
 });
-
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
-}
