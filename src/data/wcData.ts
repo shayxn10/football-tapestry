@@ -158,3 +158,36 @@ export const insights = [
     accent: "magenta",
   },
 ];
+
+// All-time top individual goal scorers in World Cup history
+export interface Scorer {
+  name: string;
+  country: string;
+  code: string;
+  goals: number;
+  tournaments: number[];
+  era: "Classic" | "Modern" | "Contemporary";
+}
+
+export const topScorers: Scorer[] = [
+  { name: "Miroslav Klose", country: "Germany", code: "de", goals: 16, tournaments: [2002, 2006, 2010, 2014], era: "Contemporary" },
+  { name: "Ronaldo Nazário", country: "Brazil", code: "br", goals: 15, tournaments: [1994, 1998, 2002, 2006], era: "Modern" },
+  { name: "Gerd Müller", country: "Germany", code: "de", goals: 14, tournaments: [1970, 1974], era: "Classic" },
+  { name: "Just Fontaine", country: "France", code: "fr", goals: 13, tournaments: [1958], era: "Classic" },
+  { name: "Lionel Messi", country: "Argentina", code: "ar", goals: 13, tournaments: [2006, 2010, 2014, 2018, 2022], era: "Contemporary" },
+  { name: "Kylian Mbappé", country: "France", code: "fr", goals: 12, tournaments: [2018, 2022], era: "Contemporary" },
+  { name: "Pelé", country: "Brazil", code: "br", goals: 12, tournaments: [1958, 1962, 1966, 1970], era: "Classic" },
+  { name: "Sándor Kocsis", country: "Hungary", code: "hu", goals: 11, tournaments: [1954], era: "Classic" },
+  { name: "Jürgen Klinsmann", country: "Germany", code: "de", goals: 11, tournaments: [1990, 1994, 1998], era: "Modern" },
+  { name: "Gabriel Batistuta", country: "Argentina", code: "ar", goals: 10, tournaments: [1994, 1998, 2002], era: "Modern" },
+  { name: "Teófilo Cubillas", country: "Peru", code: "pe", goals: 10, tournaments: [1970, 1978, 1982], era: "Classic" },
+  { name: "Grzegorz Lato", country: "Poland", code: "pl", goals: 10, tournaments: [1974, 1978, 1982], era: "Classic" },
+  { name: "Gary Lineker", country: "England", code: "gb-eng", goals: 10, tournaments: [1986, 1990], era: "Modern" },
+  { name: "Helmut Rahn", country: "Germany", code: "de", goals: 10, tournaments: [1954, 1958], era: "Classic" },
+  { name: "Thomas Müller", country: "Germany", code: "de", goals: 10, tournaments: [2010, 2014, 2018, 2022], era: "Contemporary" },
+  { name: "Cristiano Ronaldo", country: "Portugal", code: "pt", goals: 8, tournaments: [2006, 2010, 2014, 2018, 2022], era: "Contemporary" },
+  { name: "Diego Maradona", country: "Argentina", code: "ar", goals: 8, tournaments: [1982, 1986, 1990, 1994], era: "Modern" },
+  { name: "Eusébio", country: "Portugal", code: "pt", goals: 9, tournaments: [1966], era: "Classic" },
+  { name: "Roberto Baggio", country: "Italy", code: "it", goals: 9, tournaments: [1990, 1994, 1998], era: "Modern" },
+  { name: "Paolo Rossi", country: "Italy", code: "it", goals: 9, tournaments: [1978, 1982, 1986], era: "Classic" },
+];
