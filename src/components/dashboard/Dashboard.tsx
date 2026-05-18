@@ -7,10 +7,12 @@ import { motion } from "framer-motion";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Flag } from "@/components/dashboard/Flag";
 import { Insights } from "@/components/dashboard/Insights";
+import { TopScorers } from "@/components/dashboard/TopScorers";
 import {
   goalsByMinute, goalsByInterval, stageGoals, topTeams,
   teamTimeBuckets, teams2022, flag,
 } from "@/data/wcData";
+import fifaLogo from "@/assets/fifa-wc-logo.png";
 
 const axis = { stroke: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" };
 const grid = { stroke: "var(--border)", strokeDasharray: "3 3", opacity: 0.4 };
@@ -76,32 +78,31 @@ export function Dashboard() {
   return (
     <div className="min-h-screen text-foreground">
       {/* HEADER */}
-      <header className="border-b border-border/60 backdrop-blur-xl sticky top-0 z-50 bg-background/70">
+      <header className="border-b border-border/60 backdrop-blur-xl sticky top-0 z-50 bg-background/85">
+        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, var(--accent) 0%, var(--accent) 33%, var(--foreground) 33%, var(--foreground) 66%, var(--pitch) 66%, var(--pitch) 100%)" }} />
         <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="h-10 w-10 rounded-xl flex items-center justify-center font-black text-lg"
-                   style={{ background: "linear-gradient(135deg, var(--pitch), var(--cyan))", color: "#0a0a0a" }}>
-                ⚽
-              </div>
-              <div className="absolute -inset-1 rounded-xl blur-md opacity-50 -z-10"
-                   style={{ background: "linear-gradient(135deg, var(--pitch), var(--cyan))" }} />
-            </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-black tracking-tight leading-none">FIFA<span className="text-pitch">.</span>ANALYTICS</h1>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-0.5">World Cup · 1930 — 2022</p>
+            <img src={fifaLogo} alt="FIFA World Cup" className="h-11 w-11 rounded-md object-cover ring-1 ring-border/60" />
+            <div className="leading-tight">
+              <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground">FIFA · Official Data</p>
+              <h1 className="text-base sm:text-lg font-black tracking-tight uppercase">World Cup Analytics</h1>
             </div>
           </div>
-          <nav className="hidden md:flex items-center gap-1 text-xs font-mono">
-            {["HISTORICAL", "TACTICAL 2022", "INSIGHTS"].map((t, i) => (
-              <a key={t} href={`#section-${i}`} className="px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground">
-                {t}
+          <nav className="hidden md:flex items-center gap-0 text-[11px] font-bold uppercase tracking-wider">
+            {[
+              { l: "Historical", i: 0 },
+              { l: "Top Scorers", i: 1 },
+              { l: "Tactical 2022", i: 2 },
+              { l: "Insights", i: 3 },
+            ].map((t) => (
+              <a key={t.l} href={`#section-${t.i}`} className="px-3 py-2 text-muted-foreground hover:text-foreground border-b-2 border-transparent hover:border-accent transition-colors">
+                {t.l}
               </a>
             ))}
           </nav>
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono">
-            <span className="h-2 w-2 rounded-full bg-pitch animate-pulse" />
-            <span className="text-muted-foreground">LIVE DATASET</span>
+          <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider">
+            <span className="h-1.5 w-1.5 rounded-full bg-pitch animate-pulse" />
+            <span className="text-muted-foreground">Live dataset</span>
           </div>
         </div>
       </header>
@@ -110,38 +111,50 @@ export function Dashboard() {
         {/* HERO */}
         <motion.section
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-          className="relative pt-4"
+          className="relative pt-2"
         >
-          <div className="absolute inset-0 grid-bg opacity-30 -z-10 rounded-3xl" />
-          <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 items-end">
+          <div className="absolute inset-0 grid-bg opacity-20 -z-10 rounded-3xl" />
+          <div className="grid lg:grid-cols-[1.5fr_1fr] gap-10 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-full border border-pitch/40 bg-pitch/10 mb-6">
-                <span className="h-1.5 w-1.5 rounded-full bg-pitch" />
-                22 TOURNAMENTS · 964 MATCHES · 2,720 GOALS
+              <div className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em] px-3 py-1.5 rounded-sm border border-accent/50 bg-accent/10 mb-6 text-accent">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                Report · 22 Tournaments · 964 Matches · 2,720 Goals
               </div>
-              <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tighter">
-                Where, when & <br />
-                <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(120deg, var(--pitch), var(--cyan) 60%, var(--magenta))" }}>
-                  how goals happen.
-                </span>
+              <h2 className="text-5xl sm:text-6xl lg:text-[5.5rem] font-black leading-[0.92] tracking-tighter uppercase">
+                Where, when<br />
+                & <span className="text-accent">how goals</span><br />
+                happen.
               </h2>
               <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
-                Nine decades of World Cup scoring decoded — combining historical goal patterns
-                with deep tactical analysis from Qatar 2022. Possession isn't king. Shots are.
+                Nine decades of FIFA World Cup scoring decoded — combining historical goal
+                patterns with deep tactical analysis from Qatar 2022. Possession isn't king.
+                Shots are.
               </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a href="#section-0" className="px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider bg-foreground text-background rounded-sm hover:bg-foreground/90 transition-colors">
+                  Explore the data
+                </a>
+                <a href="#section-1" className="px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider border border-border hover:border-foreground text-foreground rounded-sm transition-colors">
+                  Top scorers ↓
+                </a>
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { l: "Historical goals", v: "2,720", c: "pitch" },
-                { l: "Qatar 2022 goals", v: goals2022.toString(), c: "magenta" },
-                { l: "Tournaments", v: "22", c: "cyan" },
-                { l: "Teams tracked", v: "79", c: "amber" },
-              ].map((s) => (
-                <div key={s.l} className="glass-card rounded-2xl p-5">
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.l}</p>
-                  <p className="stat-number text-4xl mt-2" style={{ color: `var(--${s.c})` }}>{s.v}</p>
-                </div>
-              ))}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-accent/10 blur-3xl -z-10 rounded-full" />
+              <img src={fifaLogo} alt="FIFA World Cup 2026" className="w-full max-w-sm mx-auto rounded-2xl shadow-2xl ring-1 ring-border/60" />
+              <div className="grid grid-cols-2 gap-2 mt-4 max-w-sm mx-auto">
+                {[
+                  { l: "Historical goals", v: "2,720", c: "foreground" },
+                  { l: "Qatar 2022 goals", v: goals2022.toString(), c: "accent" },
+                  { l: "Tournaments", v: "22", c: "foreground" },
+                  { l: "Teams tracked", v: "79", c: "accent" },
+                ].map((s) => (
+                  <div key={s.l} className="bg-card/60 border border-border/60 rounded-md p-3">
+                    <p className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">{s.l}</p>
+                    <p className="stat-number text-2xl mt-1 tabular-nums" style={{ color: `var(--${s.c})` }}>{s.v}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </motion.section>
@@ -279,9 +292,15 @@ export function Dashboard() {
           </ChartCard>
         </section>
 
-        {/* SECTION 2: TACTICAL 2022 */}
+        {/* SECTION 2: TOP SCORERS */}
         <section id="section-1" className="space-y-5">
-          <SectionHeader index="02" label="Qatar 2022 · Tactical" title="What predicts a goal?" />
+          <SectionHeader index="02" label="Top Scorers · 1930 — 2022" title="The all-time leaderboard" />
+          <TopScorers />
+        </section>
+
+        {/* SECTION 3: TACTICAL 2022 */}
+        <section id="section-2" className="space-y-5">
+          <SectionHeader index="03" label="Qatar 2022 · Tactical" title="What predicts a goal?" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ScatterCard title="Possession vs Goals" subtitle="weak correlation · r ≈ 0.31" accent="magenta"
               xKey="possession" xLabel="Possession %" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
@@ -316,8 +335,8 @@ export function Dashboard() {
           </ChartCard>
         </section>
 
-        {/* SECTION 3: INSIGHTS */}
-        <section id="section-2">
+        {/* SECTION 4: INSIGHTS */}
+        <section id="section-3">
           <Insights />
         </section>
 
