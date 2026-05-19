@@ -355,11 +355,25 @@ export function Dashboard() {
   );
 }
 
-function SectionHeader({ index, label, title }: { index: string; label: string; title: string }) {
+function SectionHeader({ index, label, title, badge, badgeAccent = "pitch" }: { index: string; label: string; title: string; badge?: string; badgeAccent?: "pitch" | "accent" | "cyan" | "magenta" }) {
   return (
     <div className="flex items-end justify-between gap-4 flex-wrap">
       <div>
-        <p className="text-xs font-mono uppercase tracking-[0.25em] text-pitch mb-2">{index} — {label}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-xs font-mono uppercase tracking-[0.25em] text-pitch">{index} — {label}</p>
+          {badge && (
+            <span
+              className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-sm border"
+              style={{
+                color: `var(--${badgeAccent})`,
+                borderColor: `color-mix(in oklab, var(--${badgeAccent}) 50%, transparent)`,
+                background: `color-mix(in oklab, var(--${badgeAccent}) 12%, transparent)`,
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">{title}</h2>
       </div>
       <div className="h-px flex-1 max-w-md bg-gradient-to-r from-border to-transparent hidden sm:block" />
