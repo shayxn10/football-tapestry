@@ -295,26 +295,26 @@ export function Dashboard() {
         </section>
 
         {/* SECTION 2: TOP SCORERS */}
-        <section id="section-1" className="space-y-5">
-          <SectionHeader index="02" label="Top Scorers · 1930 — 2022" title="The all-time leaderboard" />
+        <section id="section-1" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="02" label="Top Scorers" title="The all-time leaderboard" badge="1930 – 2022" badgeAccent="cyan" />
           <TopScorers />
         </section>
 
         {/* SECTION 3: TACTICAL 2022 */}
-        <section id="section-2" className="space-y-5">
-          <SectionHeader index="03" label="Qatar 2022 · Tactical" title="What predicts a goal?" />
+        <section id="section-2" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="03" label="Tactical Team Analysis" title="What correlates with goals?" badge="Qatar 2022 only" badgeAccent="accent" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <ScatterCard title="Possession vs Goals" subtitle="weak correlation · r ≈ 0.31" accent="magenta"
-              xKey="possession" xLabel="Possession %" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Shots vs Goals" subtitle="strongest predictor · r ≈ 0.74" accent="pitch"
-              xKey="shots" xLabel="Shots" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Passes vs Goals" subtitle="moderate correlation · r ≈ 0.48" accent="cyan"
-              xKey="passes" xLabel="Passes" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Defensive pressure vs Goals conceded" subtitle="weak negative · r ≈ −0.22" accent="amber"
+            <ScatterCard title="Possession vs Goals" subtitle="weak-to-moderate correlation observed · r ≈ 0.31" accent="magenta"
+              xKey="possession" xLabel="Possession (%)" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Shots vs Goals" subtitle="strongest correlation observed · r ≈ 0.74" accent="pitch"
+              xKey="shots" xLabel="Total shots" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Passes vs Goals" subtitle="moderate correlation observed · r ≈ 0.48" accent="cyan"
+              xKey="passes" xLabel="Total passes" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Defensive pressure vs Goals conceded" subtitle="weak negative correlation observed · r ≈ −0.22" accent="amber"
               xKey="pressure" xLabel="Defensive actions" yKey="conceded" yLabel="Goals conceded" data={filteredTeams2022} />
           </div>
 
-          <ChartCard title="Team performance comparison" subtitle="goals scored vs conceded · Qatar 2022" accent="pitch">
+          <ChartCard title="2022 Match Outcome Comparison" subtitle="goals scored vs goals conceded per team — not a ranking of team strength" accent="pitch">
             <ResponsiveContainer width="100%" height={360}>
               <BarChart data={[...teams2022].sort((a, b) => b.goals - a.goals).slice(0, 16)}>
                 <CartesianGrid {...grid} vertical={false} />
@@ -326,7 +326,10 @@ export function Dashboard() {
                 <Bar dataKey="conceded" name="Conceded" fill="var(--magenta)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap gap-1.5 mt-4">
+            <p className="text-[11px] text-muted-foreground mt-3 font-mono">
+              Note: comparative trend based on data — totals reflect tournament progression (more matches in knockout rounds), not absolute team quality.
+            </p>
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {[...teams2022].sort((a, b) => b.goals - a.goals).slice(0, 16).map(t => (
                 <div key={t.code} className="flex items-center gap-1.5 text-[10px] font-mono px-2 py-1 rounded-md bg-muted/40">
                   <Flag code={t.code} size={14} />
@@ -337,8 +340,14 @@ export function Dashboard() {
           </ChartCard>
         </section>
 
-        {/* SECTION 4: INSIGHTS */}
-        <section id="section-3">
+        {/* SECTION 4: PLAYERS 2022 */}
+        <section id="section-3" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="04" label="⚽ Player Performance Analysis" title="Who finished, who didn't" badge="Qatar 2022 only" badgeAccent="accent" />
+          <PlayerAnalysis />
+        </section>
+
+        {/* SECTION 5: INSIGHTS */}
+        <section id="section-4" className="scroll-mt-24 pt-4 border-t border-border/40">
           <Insights />
         </section>
 
