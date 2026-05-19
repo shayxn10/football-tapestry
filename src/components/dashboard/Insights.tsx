@@ -1,18 +1,27 @@
 import { motion } from "framer-motion";
-import { insights } from "@/data/wcData";
+import { insights, playerInsights } from "@/data/wcData";
+
+const all = [
+  ...insights.map(i => ({ ...i, scope: "Historical / Qatar 2022" })),
+  ...playerInsights.map(i => ({ ...i, scope: "Qatar 2022 · Players" })),
+];
 
 export function Insights() {
   return (
     <section className="space-y-5">
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Analytical findings</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Analytical findings · correlation, not causation</p>
           <h2 className="text-3xl sm:text-4xl font-bold">Key Insights</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
+            All values below describe relationships between variables observed in the dataset.
+            Correlation coefficients (<span className="font-mono">r</span>) are reported as comparative trends — they do not imply causation.
+          </p>
         </div>
-        <div className="text-xs font-mono text-muted-foreground hidden sm:block">06 / SIGNALS</div>
+        <div className="text-xs font-mono text-muted-foreground hidden sm:block">{all.length.toString().padStart(2, "0")} / SIGNALS</div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {insights.map((ins, i) => (
+        {all.map((ins, i) => (
           <motion.div
             key={ins.id}
             initial={{ opacity: 0, y: 16 }}
@@ -28,7 +37,7 @@ export function Insights() {
             <div className="flex items-start justify-between mb-4">
               <div className="text-3xl">{ins.icon}</div>
               <span
-                className="text-xs font-mono px-2 py-1 rounded-md"
+                className="text-xs font-mono px-2 py-1 rounded-md tabular-nums"
                 style={{
                   background: `color-mix(in oklab, var(--${ins.accent}) 18%, transparent)`,
                   color: `var(--${ins.accent})`,
@@ -37,6 +46,7 @@ export function Insights() {
                 {ins.metric}
               </span>
             </div>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1 font-mono">{ins.scope}</p>
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{ins.title}</p>
             <h3 className="text-lg font-bold mb-3" style={{ color: `var(--${ins.accent})` }}>
               {ins.headline}

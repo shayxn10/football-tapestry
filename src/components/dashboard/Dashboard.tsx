@@ -8,6 +8,7 @@ import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Flag } from "@/components/dashboard/Flag";
 import { Insights } from "@/components/dashboard/Insights";
 import { TopScorers } from "@/components/dashboard/TopScorers";
+import { PlayerAnalysis } from "@/components/dashboard/PlayerAnalysis";
 import {
   goalsByMinute, goalsByInterval, stageGoals, topTeams,
   teamTimeBuckets, teams2022, flag,
@@ -93,7 +94,8 @@ export function Dashboard() {
               { l: "Historical", i: 0 },
               { l: "Top Scorers", i: 1 },
               { l: "Tactical 2022", i: 2 },
-              { l: "Insights", i: 3 },
+              { l: "Players 2022", i: 3 },
+              { l: "Insights", i: 4 },
             ].map((t) => (
               <a key={t.l} href={`#section-${t.i}`} className="px-3 py-2 text-muted-foreground hover:text-foreground border-b-2 border-transparent hover:border-accent transition-colors">
                 {t.l}
@@ -126,9 +128,9 @@ export function Dashboard() {
                 happen.
               </h2>
               <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
-                Nine decades of FIFA World Cup scoring decoded — combining historical goal
-                patterns with deep tactical analysis from Qatar 2022. Possession isn't king.
-                Shots are.
+                Nine decades of FIFA World Cup scoring, combined with tactical and player-level
+                analysis from Qatar 2022. Every figure below describes a correlation observed in
+                the data — not a causal claim.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <a href="#section-0" className="px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider bg-foreground text-background rounded-sm hover:bg-foreground/90 transition-colors">
@@ -195,8 +197,8 @@ export function Dashboard() {
         </section>
 
         {/* SECTION 1: HISTORICAL */}
-        <section id="section-0" className="space-y-5">
-          <SectionHeader index="01" label="Historical Analysis" title="Goals across nine decades" />
+        <section id="section-0" className="space-y-5 scroll-mt-24">
+          <SectionHeader index="01" label="Historical Analysis" title="Goals across nine decades" badge="1930 – 2022" badgeAccent="cyan" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <ChartCard title="Goal distribution by match minute" subtitle="1930 — 2022 · all matches" accent="pitch" className="lg:col-span-2">
               <ResponsiveContainer width="100%" height={280}>
@@ -293,26 +295,26 @@ export function Dashboard() {
         </section>
 
         {/* SECTION 2: TOP SCORERS */}
-        <section id="section-1" className="space-y-5">
-          <SectionHeader index="02" label="Top Scorers · 1930 — 2022" title="The all-time leaderboard" />
+        <section id="section-1" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="02" label="Top Scorers" title="The all-time leaderboard" badge="1930 – 2022" badgeAccent="cyan" />
           <TopScorers />
         </section>
 
         {/* SECTION 3: TACTICAL 2022 */}
-        <section id="section-2" className="space-y-5">
-          <SectionHeader index="03" label="Qatar 2022 · Tactical" title="What predicts a goal?" />
+        <section id="section-2" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="03" label="Tactical Team Analysis" title="What correlates with goals?" badge="Qatar 2022 only" badgeAccent="accent" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <ScatterCard title="Possession vs Goals" subtitle="weak correlation · r ≈ 0.31" accent="magenta"
-              xKey="possession" xLabel="Possession %" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Shots vs Goals" subtitle="strongest predictor · r ≈ 0.74" accent="pitch"
-              xKey="shots" xLabel="Shots" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Passes vs Goals" subtitle="moderate correlation · r ≈ 0.48" accent="cyan"
-              xKey="passes" xLabel="Passes" yKey="goals" yLabel="Goals" data={filteredTeams2022} />
-            <ScatterCard title="Defensive pressure vs Goals conceded" subtitle="weak negative · r ≈ −0.22" accent="amber"
+            <ScatterCard title="Possession vs Goals" subtitle="weak-to-moderate correlation observed · r ≈ 0.31" accent="magenta"
+              xKey="possession" xLabel="Possession (%)" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Shots vs Goals" subtitle="strongest correlation observed · r ≈ 0.74" accent="pitch"
+              xKey="shots" xLabel="Total shots" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Passes vs Goals" subtitle="moderate correlation observed · r ≈ 0.48" accent="cyan"
+              xKey="passes" xLabel="Total passes" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
+            <ScatterCard title="Defensive pressure vs Goals conceded" subtitle="weak negative correlation observed · r ≈ −0.22" accent="amber"
               xKey="pressure" xLabel="Defensive actions" yKey="conceded" yLabel="Goals conceded" data={filteredTeams2022} />
           </div>
 
-          <ChartCard title="Team performance comparison" subtitle="goals scored vs conceded · Qatar 2022" accent="pitch">
+          <ChartCard title="2022 Match Outcome Comparison" subtitle="goals scored vs goals conceded per team — not a ranking of team strength" accent="pitch">
             <ResponsiveContainer width="100%" height={360}>
               <BarChart data={[...teams2022].sort((a, b) => b.goals - a.goals).slice(0, 16)}>
                 <CartesianGrid {...grid} vertical={false} />
@@ -324,7 +326,10 @@ export function Dashboard() {
                 <Bar dataKey="conceded" name="Conceded" fill="var(--magenta)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap gap-1.5 mt-4">
+            <p className="text-[11px] text-muted-foreground mt-3 font-mono">
+              Note: comparative trend based on data — totals reflect tournament progression (more matches in knockout rounds), not absolute team quality.
+            </p>
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {[...teams2022].sort((a, b) => b.goals - a.goals).slice(0, 16).map(t => (
                 <div key={t.code} className="flex items-center gap-1.5 text-[10px] font-mono px-2 py-1 rounded-md bg-muted/40">
                   <Flag code={t.code} size={14} />
@@ -335,8 +340,14 @@ export function Dashboard() {
           </ChartCard>
         </section>
 
-        {/* SECTION 4: INSIGHTS */}
-        <section id="section-3">
+        {/* SECTION 4: PLAYERS 2022 */}
+        <section id="section-3" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
+          <SectionHeader index="04" label="⚽ Player Performance Analysis" title="Who finished, who didn't" badge="Qatar 2022 only" badgeAccent="accent" />
+          <PlayerAnalysis />
+        </section>
+
+        {/* SECTION 5: INSIGHTS */}
+        <section id="section-4" className="scroll-mt-24 pt-4 border-t border-border/40">
           <Insights />
         </section>
 
@@ -353,11 +364,25 @@ export function Dashboard() {
   );
 }
 
-function SectionHeader({ index, label, title }: { index: string; label: string; title: string }) {
+function SectionHeader({ index, label, title, badge, badgeAccent = "pitch" }: { index: string; label: string; title: string; badge?: string; badgeAccent?: "pitch" | "accent" | "cyan" | "magenta" }) {
   return (
     <div className="flex items-end justify-between gap-4 flex-wrap">
       <div>
-        <p className="text-xs font-mono uppercase tracking-[0.25em] text-pitch mb-2">{index} — {label}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-xs font-mono uppercase tracking-[0.25em] text-pitch">{index} — {label}</p>
+          {badge && (
+            <span
+              className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-sm border"
+              style={{
+                color: `var(--${badgeAccent})`,
+                borderColor: `color-mix(in oklab, var(--${badgeAccent}) 50%, transparent)`,
+                background: `color-mix(in oklab, var(--${badgeAccent}) 12%, transparent)`,
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">{title}</h2>
       </div>
       <div className="h-px flex-1 max-w-md bg-gradient-to-r from-border to-transparent hidden sm:block" />
