@@ -197,8 +197,8 @@ export function Dashboard() {
         </section>
 
         {/* SECTION 1: HISTORICAL */}
-        <section id="section-0" className="space-y-5">
-          <SectionHeader index="01" label="Historical Analysis" title="Goals across nine decades" />
+        <section id="section-0" className="space-y-5 scroll-mt-24">
+          <SectionHeader index="01" label="Historical Analysis" title="Goals across nine decades" badge="1930 – 2022" badgeAccent="cyan" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <ChartCard title="Goal distribution by match minute" subtitle="1930 — 2022 · all matches" accent="pitch" className="lg:col-span-2">
               <ResponsiveContainer width="100%" height={280}>
