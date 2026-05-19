@@ -8,6 +8,7 @@ import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Flag } from "@/components/dashboard/Flag";
 import { Insights } from "@/components/dashboard/Insights";
 import { TopScorers } from "@/components/dashboard/TopScorers";
+import { PlayerAnalysis } from "@/components/dashboard/PlayerAnalysis";
 import {
   goalsByMinute, goalsByInterval, stageGoals, topTeams,
   teamTimeBuckets, teams2022, flag,
