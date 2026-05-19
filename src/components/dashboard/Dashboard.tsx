@@ -14,6 +14,7 @@ import {
   teamTimeBuckets, teams2022, flag,
 } from "@/data/wcData";
 import fifaLogo from "@/assets/fifa-wc-logo.png";
+import qatarLogo from "@/assets/qatar-2022-logo.png";
 
 const axis = { stroke: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" };
 const grid = { stroke: "var(--border)", strokeDasharray: "3 3", opacity: 0.4 };
@@ -303,6 +304,60 @@ export function Dashboard() {
         {/* SECTION 3: TACTICAL 2022 */}
         <section id="section-2" className="space-y-5 scroll-mt-24 pt-4 border-t border-border/40">
           <SectionHeader index="03" label="Tactical Team Analysis" title="What correlates with goals?" badge="Qatar 2022 only" badgeAccent="accent" />
+
+          {/* Qatar 2022 cohesive intro banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative overflow-hidden rounded-2xl border border-border/60"
+            style={{
+              background:
+                "linear-gradient(110deg, #4b0d27 0%, #6b1238 45%, color-mix(in oklab, var(--background) 70%, #4b0d27) 100%)",
+            }}
+          >
+            <div
+              className="absolute inset-0 opacity-[0.08] mix-blend-screen"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(90deg, transparent 0 14px, rgba(255,255,255,0.35) 14px 15px)",
+              }}
+            />
+            <div className="relative grid grid-cols-[auto_1fr] gap-5 sm:gap-7 items-center p-5 sm:p-7">
+              <div className="relative shrink-0">
+                <div className="absolute -inset-3 rounded-full bg-white/5 blur-xl" />
+                <img
+                  src={qatarLogo}
+                  alt="FIFA World Cup Qatar 2022 official emblem"
+                  className="relative h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-[0_6px_24px_rgba(0,0,0,0.45)]"
+                />
+              </div>
+              <div className="text-white">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/70">
+                    Dataset · Qatar 2022 · 32 teams · 64 matches
+                  </p>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black tracking-tight uppercase leading-tight">
+                  The 22<sup className="text-xs align-super">nd</sup> FIFA World Cup
+                </h3>
+                <p className="text-xs sm:text-sm text-white/75 mt-2 max-w-2xl leading-relaxed">
+                  All charts in this section are scoped strictly to the Qatar 2022 tournament. Values
+                  describe correlations observed in the data — not causal claims about team quality.
+                </p>
+                <div className="hidden sm:flex flex-wrap gap-2 mt-3 text-[10px] font-mono uppercase tracking-wider">
+                  {["20 Nov – 18 Dec 2022", "8 venues", "172 goals", "Champions: Argentina"].map((t) => (
+                    <span key={t} className="px-2 py-1 rounded-sm bg-white/10 border border-white/15 text-white/85">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ScatterCard title="Possession vs Goals" subtitle="weak-to-moderate correlation observed · r ≈ 0.31" accent="magenta"
               xKey="possession" xLabel="Possession (%)" yKey="goals" yLabel="Goals scored" data={filteredTeams2022} />
