@@ -14,6 +14,7 @@ import {
   teamTimeBuckets, teams2022, flag,
 } from "@/data/wcData";
 import fifaLogo from "@/assets/fifa-wc-logo.png";
+import qatarLogo from "@/assets/qatar-2022-logo.png";
 
 const axis = { stroke: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" };
 const grid = { stroke: "var(--border)", strokeDasharray: "3 3", opacity: 0.4 };
