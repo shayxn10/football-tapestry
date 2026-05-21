@@ -36,45 +36,36 @@ export function SimulatorPage() {
     let stoppedAt: string | null = null;
     while (safety-- > 0) {
       const fresh = engine.getState();
-      const ordered = CHRONOLOGICAL_IDS.map(id => fresh.resolvedMatches[id]).filter(Boolean);
+      const ordered = CHRONOLOGICAL_IDS
+        .map(id => fresh.resolvedMatches[id])
+        .filter((m): m is NonNullable<typeof m> => Boolean(m));
       let didMutate = false;
       for (const m of ordered) {
-        if (!m) continue;
         if (m.isComplete) continue;
-        // NOT ready = upstream slot still null. STOP entirely.
         if (!m.isReady) { stoppedAt = m.id; break; }
         if (requiresUserInput(m)) { stoppedAt = m.id; break; }
-        // Auto-simulate this match. Engine mutated → re-read on next outer iter.
+        // Auto-simulate this ready match.
         const r = autoSimulate();
         let winnerId: string | undefined;
         if (m.stage !== "group" && r.goals1 === r.goals2) {
           winnerId = Math.random() < 0.5 ? m.team1 : m.team2;
         }
         try {
-          engine.setMatchResult(m.id, { ...r, winnerId });
+          t.setMatchResult(m.id, { ...r, winnerId });
           didMutate = true;
-          break; // re-evaluate fresh state from the top
-        } catch { /* slot not ready — abort this match */ }
+          break; // re-read fresh state
+        } catch { /* slot not ready — abort */ }
       }
       if (!didMutate) break;
     }
-    // Sync React with whatever engine now holds.
-    const finalState = engine.getState();
-    try { localStorage.setItem("wc2026_engine_results", JSON.stringify(finalState.results)); } catch {}
-    // Trigger re-render via store update
-    t.setMatchResult; // no-op reference
     if (stoppedAt) {
       const idx = CHRONOLOGICAL_IDS.indexOf(stoppedAt);
       if (idx >= 0 && idx !== t.currentIndex) t.setCurrentIndex(idx);
     }
-    // Force store to publish fresh state to React:
-    // call any setter that triggers sync — easiest: setMatchResult on a no-op
-    // is unsafe; instead read via t.state next tick. The setCurrentIndex above
-    // already re-renders; the store's chronologicalMatches selector reads
-    // engine state on next render.
-  }, [t.mode, t.currentIndex, requiresUserInput, t.setCurrentIndex]);
+  }, [t.mode, t.currentIndex, t.setMatchResult, t.setCurrentIndex, requiresUserInput]);
 
   useEffect(() => { advance(); }, [advance, t.state]);
+
 
 
   // Watch for champion crowned
