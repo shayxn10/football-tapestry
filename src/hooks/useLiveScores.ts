@@ -63,7 +63,9 @@ export function useLiveScores() {
   const lastFetchRef = useRef<number>(cached?.ts ?? 0);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_FOOTBALL_API_KEY as string | undefined;
+    const apiKey =
+      (import.meta.env.VITE_FOOTBALL_API_KEY as string | undefined) ||
+      "5f656d4133aa35f796627d8d1e4ccdf8";
     if (!apiKey) {
       setState(s => ({ ...s, loading: false, error: "no-api-key" }));
       return;
