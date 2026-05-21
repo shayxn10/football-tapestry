@@ -222,6 +222,9 @@ export function Dashboard() {
           </div>
         </motion.section>
 
+        {/* TOURNAMENT STATUS — three-phase block */}
+        <TournamentStatus />
+
         {/* FILTERS */}
         <section className="glass-card rounded-2xl p-4 sm:p-5 flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
