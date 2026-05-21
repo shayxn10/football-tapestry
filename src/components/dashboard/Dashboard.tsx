@@ -4,12 +4,14 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, ScatterChart, Scatter, Legend, ReferenceLine, Cell,
 } from "recharts";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Flag } from "@/components/dashboard/Flag";
 import { Insights } from "@/components/dashboard/Insights";
 import { TopScorers } from "@/components/dashboard/TopScorers";
 import { PlayerAnalysis } from "@/components/dashboard/PlayerAnalysis";
+import { LiveScoreBar } from "@/components/LiveScoreBar/LiveScoreBar";
+import { TournamentStatus } from "@/components/TournamentStatus/TournamentStatus";
 import {
   goalsByMinute, goalsByInterval, stageGoals, topTeams,
   teamTimeBuckets, teams2022, flag,
