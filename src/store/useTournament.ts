@@ -18,7 +18,7 @@ const KEYS = {
 };
 
 // Module-level engine: single source of truth across the app.
-const engine = new TournamentEngine(ALL_FIXTURES);
+export const engine = new TournamentEngine(ALL_FIXTURES);
 
 // Restore persisted results on first import (client only)
 if (typeof window !== "undefined") {
