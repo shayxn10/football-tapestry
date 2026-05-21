@@ -233,27 +233,14 @@ export function SimulatorPage() {
 
       <AnimatePresence>
         {showChampion && t.champion && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex items-center justify-center p-6"
-            onClick={() => setShowChampion(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.85, y: 20 }} animate={{ scale: 1, y: 0 }}
-              className="text-center max-w-lg"
-            >
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-accent mb-3">FIFA World Cup 2026 Champion</p>
-              <div className="text-8xl mb-4">🏆</div>
-              <h1 className="text-5xl sm:text-6xl font-black uppercase tracking-tight mb-2">{t.champion}</h1>
-              <p className="text-muted-foreground mb-6">{t.state.bracket["L_F_M01"] && `defeated ${t.state.bracket["L_F_M01"]} in the Final`}</p>
-              <div className="flex gap-3 justify-center">
-                <button onClick={() => setShowChampion(false)} className="px-5 py-2.5 text-xs font-bold uppercase tracking-widest bg-foreground text-background rounded-md">View bracket</button>
-                <button onClick={handleReset} className="px-5 py-2.5 text-xs font-bold uppercase tracking-widest border border-border rounded-md hover:border-foreground">Start over</button>
-              </div>
-            </motion.div>
-          </motion.div>
+          <ChampionReveal
+            champion={t.champion}
+            isUserTeam={t.mode === "journey" && t.selectedTeam === t.champion}
+            onDismiss={() => setShowChampion(false)}
+          />
         )}
       </AnimatePresence>
+
     </div>
   );
 }
