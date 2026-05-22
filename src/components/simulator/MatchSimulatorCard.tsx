@@ -102,7 +102,7 @@ export function MatchSimulatorCard({ match, onSimulate, onPrev, canGoPrev, total
                   Penalty shootout — pick the winner
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  {[match.team1, match.team2].map(t => (
+                  {[team1, team2].map(t => (
                     <button
                       key={t}
                       onClick={() => setWinner(t)}
