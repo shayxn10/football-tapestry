@@ -80,7 +80,7 @@ export function LiveScoreBar() {
 
   let content: React.ReactNode;
   if (phase === "pre") {
-    const txt = `⏳ World Cup begins in ${cd.days}d ${cd.hours}h ${cd.minutes}m · Opening match: Mexico vs South Africa · June 11`;
+    const txt = `⏳ KICKOFF IN ${cd.days}D ${cd.hours}H ${cd.minutes}M · OPENING MATCH · 🇲🇽 MEXICO vs SOUTH AFRICA 🇿🇦 · JUNE 11, 2026 · ESTADIO AZTECA`;
     content = (
       <span className="text-[#f5a623] text-[11px] sm:text-xs px-2 whitespace-nowrap">{txt}</span>
     );
