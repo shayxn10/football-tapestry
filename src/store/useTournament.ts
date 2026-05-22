@@ -117,14 +117,37 @@ function readLS<T>(key: string, fallback: T): T {
   } catch { return fallback; }
 }
 
+function applyPatches(raw: TournamentState): TournamentState {
+  const next = raw as TournamentState;
+  const groupMatches = Object.values(next.resolvedMatches).filter(m => m.stage === "group");
+  const groupTotal = groupMatches.length;
+  const groupDone = groupMatches.filter(m => m.isComplete).length;
+  if (groupTotal > 0 && groupDone === groupTotal) {
+    // Diagnostic
+    if (typeof window !== "undefined" && !(window as any).__wc26_logged) {
+      (window as any).__wc26_logged = true;
+      console.log("=== BRACKET SLOTS AFTER GROUP STAGE ===");
+      Object.entries(next.bracket).forEach(([k, v]) => {
+        console.log(`${k}: ${v ?? "NULL ← PROBLEM"}`);
+      });
+    }
+    const patchedBracket = patchMissingT3Slots(next.bracket, next.groups);
+    next.bracket = patchedBracket;
+    next.resolvedMatches = reresolveMatches(next.resolvedMatches, patchedBracket);
+  } else if (typeof window !== "undefined") {
+    (window as any).__wc26_logged = false;
+  }
+  return next;
+}
+
 export function useTournament() {
-  const [state, setState] = useState<TournamentState>(engine.getState());
+  const [state, setState] = useState<TournamentState>(() => applyPatches(engine.getState()));
   const [mode, setModeState] = useState<SimMode | null>(() => readLS<SimMode | null>(KEYS.mode, null));
   const [selectedTeam, setSelectedTeamState] = useState<string | null>(() => readLS<string | null>(KEYS.team, null));
   const [currentIndex, setCurrentIndexState] = useState<number>(() => readLS<number>(KEYS.index, 0));
 
   const sync = useCallback(() => {
-    const next = engine.getState();
+    const next = applyPatches(engine.getState());
     setState(next);
     try { localStorage.setItem(KEYS.results, JSON.stringify(next.results)); } catch {}
   }, []);
