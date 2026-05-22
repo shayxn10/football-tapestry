@@ -36,7 +36,7 @@ export function SimulatorPage() {
     let safety = 250;
     let stoppedAt: string | null = null;
     while (safety-- > 0) {
-      const fresh = engine.getState();
+      const fresh = applyPatches(engine.getState());
       const ordered = CHRONOLOGICAL_IDS
         .map(id => fresh.resolvedMatches[id])
         .filter((m): m is NonNullable<typeof m> => Boolean(m));
