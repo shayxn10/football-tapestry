@@ -18,6 +18,9 @@ interface Props {
 export function MatchSimulatorCard({ match, onSimulate, onPrev, canGoPrev, totalIndex, totalCount }: Props) {
   const meta = MATCH_META[match.id];
   const isKO = match.stage !== "group";
+  const bracket = engine.getState().bracket;
+  const team1 = resolveTeamName(match.team1, bracket);
+  const team2 = resolveTeamName(match.team2, bracket);
   const [g1, setG1] = useState(match.result?.goals1 ?? 0);
   const [g2, setG2] = useState(match.result?.goals2 ?? 0);
   const [winner, setWinner] = useState<string | undefined>(match.result?.winnerId);
