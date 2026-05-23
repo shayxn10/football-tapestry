@@ -102,10 +102,14 @@ export function compareTeams(a: TeamRecord, b: TeamRecord, headToHead?: Record<s
 
 export class TournamentEngine {
   private fixtures: Record<string, Match> = {};
+  private originalFixtures: Record<string, Match> = {};
   private state: TournamentState;
 
   constructor(fixtures: Match[]) {
-    for (const m of fixtures) this.fixtures[m.id] = { ...m };
+    for (const m of fixtures) {
+      this.fixtures[m.id] = { ...m };
+      this.originalFixtures[m.id] = { ...m };
+    }
     this.state = this.buildEmptyState();
     this.recalculate();
   }
@@ -129,13 +133,9 @@ export class TournamentEngine {
   }
 
   reset(): void {
-    // restore original team labels in fixtures (so slot labels reappear)
-    for (const id of Object.keys(this.fixtures)) {
-      const slots = BRACKET_TEMPLATE[id];
-      if (slots) {
-        this.fixtures[id].team1 = slots[0];
-        this.fixtures[id].team2 = slots[1];
-      }
+    // Restore original unresolved fixture data (knockout slot labels reappear)
+    for (const id of Object.keys(this.originalFixtures)) {
+      this.fixtures[id] = { ...this.originalFixtures[id] };
     }
     this.state = this.buildEmptyState();
     this.recalculate();
