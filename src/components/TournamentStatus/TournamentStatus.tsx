@@ -362,43 +362,9 @@ export function TournamentStatus() {
   return (
     <section
       className="relative w-full overflow-hidden rounded-2xl"
-      style={{
-        minHeight: 520,
-        background: "#000000",
-      }}
+      style={{ minHeight: 520 }}
     >
-      {/* Atmosphere gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20,10,0,0.9) 0%, #000000 100%)",
-        }}
-      />
-      {/* Golden center pulse */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          left: "50%",
-          top: "50%",
-          width: 600,
-          height: 300,
-          background:
-            "radial-gradient(ellipse, rgba(245,166,35,0.07) 0%, transparent 70%)",
-          transform: "translate(-50%,-50%)",
-          animation: "goldPulse 4s ease-in-out infinite",
-        }}
-      />
-      {/* Top vignette */}
-      <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{ height: 120, background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}
-      />
-      {/* Bottom vignette */}
-      <div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{ height: 120, background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)" }}
-      />
+      {phase === "pre" && <PitchBackground />}
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
