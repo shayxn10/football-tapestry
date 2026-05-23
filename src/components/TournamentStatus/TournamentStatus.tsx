@@ -83,16 +83,95 @@ function Colon({ hideOnMobile = false }: { hideOnMobile?: boolean }) {
   );
 }
 
-function Divider() {
+
+function PitchBackground() {
+  // Pure CSS/SVG football pitch — scales perfectly at all sizes.
   return (
-    <div
-      style={{
-        height: 1,
-        margin: "24px 0",
-        background:
-          "linear-gradient(to right, transparent 0%, rgba(245,166,35,0.6) 20%, rgba(245,166,35,0.9) 50%, rgba(245,166,35,0.6) 80%, transparent 100%)",
-      }}
-    />
+    <div className="absolute inset-0 pointer-events-none" aria-hidden>
+      {/* Grass */}
+      <div className="absolute inset-0" style={{ background: "#2d7a3a" }} />
+      {/* Subtle horizontal mow stripes */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 40px, rgba(0,0,0,0.04) 40px 80px)",
+        }}
+      />
+      {/* Pitch markings (opacity 0.25) */}
+      <div className="absolute inset-0" style={{ opacity: 0.25 }}>
+        {/* Outer border */}
+        <div
+          className="absolute"
+          style={{ inset: 20, border: "3px solid #fff", borderRadius: 4 }}
+        />
+        {/* Halfway line */}
+        <div
+          className="absolute left-5 right-5"
+          style={{ top: "50%", height: 3, background: "#fff" }}
+        />
+        {/* Center circle */}
+        <div
+          className="absolute"
+          style={{
+            left: "50%",
+            top: "50%",
+            width: 140,
+            height: 140,
+            border: "3px solid #fff",
+            borderRadius: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        />
+        {/* Center spot */}
+        <div
+          className="absolute"
+          style={{
+            left: "50%",
+            top: "50%",
+            width: 8,
+            height: 8,
+            background: "#fff",
+            borderRadius: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        />
+        {/* Left penalty box */}
+        <div
+          className="absolute"
+          style={{
+            left: 20,
+            top: "30%",
+            width: "22%",
+            height: "40%",
+            borderTop: "3px solid #fff",
+            borderRight: "3px solid #fff",
+            borderBottom: "3px solid #fff",
+          }}
+        />
+        {/* Right penalty box */}
+        <div
+          className="absolute"
+          style={{
+            right: 20,
+            top: "30%",
+            width: "22%",
+            height: "40%",
+            borderTop: "3px solid #fff",
+            borderLeft: "3px solid #fff",
+            borderBottom: "3px solid #fff",
+          }}
+        />
+      </div>
+      {/* Dimming overlay so foreground text is legible */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.55) 100%)",
+        }}
+      />
+    </div>
   );
 }
 
@@ -109,149 +188,141 @@ function PhaseCountdown() {
   const s = Math.floor((diff % 60000) / 1000);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 text-center">
-      {/* Logo / brand lockup */}
-      <div className="flex justify-center" style={{ marginTop: 16 }}>
-        <img
-          src={wc2026Logo}
-          alt="FIFA World Cup 2026"
+    <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 text-center">
+      {/* Top badge */}
+      <div className="flex justify-center mb-6">
+        <span
+          className="inline-flex items-center gap-2"
           style={{
-            width: 140,
-            height: "auto",
-            filter: "drop-shadow(0 0 24px rgba(245,166,35,0.4))",
+            background: "rgba(0,0,0,0.5)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            borderRadius: 20,
+            padding: "6px 20px",
+            color: "#fff",
+            fontFamily: "var(--font-sans), DM Sans",
+            fontSize: 12,
+            letterSpacing: "0.1em",
           }}
-        />
+        >
+          <img src={wc2026Logo} alt="" style={{ height: 20, width: "auto" }} />
+          FIFA World Cup 2026 · Official Data
+        </span>
       </div>
 
-      <Divider />
-
+      {/* Headline */}
       <h3
+        className="text-[36px] sm:text-[48px] xl:text-[56px] mb-6"
         style={{
           fontFamily: "Bebas Neue, var(--font-display)",
-          color: "#ffffff",
-          letterSpacing: "0.2em",
-          textShadow: "0 0 40px rgba(245,166,35,0.2)",
+          letterSpacing: "0.05em",
+          lineHeight: 1,
         }}
-        className="text-[28px] sm:text-[36px] xl:text-[44px] mb-8"
       >
-        THE WAIT IS ALMOST OVER
+        <span style={{ color: "#fff" }}>THE WAIT IS </span>
+        <span style={{ color: "#f5a623" }}>ALMOST OVER</span>
       </h3>
 
-      <div className="flex items-stretch justify-center gap-1.5 sm:gap-2">
+      {/* Countdown numbers */}
+      <div className="flex items-start justify-center gap-1 sm:gap-1.5">
         <FlipNumber value={d} label="Days" />
         <Colon />
         <FlipNumber value={h} label="Hours" />
         <Colon />
-        <FlipNumber value={m} label="Minutes" />
+        <FlipNumber value={m} label="Mins" />
         <Colon hideOnMobile />
-        <FlipNumber value={s} label="Seconds" />
+        <FlipNumber value={s} label="Secs" />
       </div>
 
-      <Divider />
-
-      <div className="text-center mt-7">
-        <span
-          className="inline-flex items-center"
-          style={{
-            background: "rgba(245,166,35,0.08)",
-            border: "1px solid rgba(245,166,35,0.25)",
-            borderRadius: 20,
-            padding: "5px 20px",
-            color: "#f5a623",
-            fontFamily: "var(--font-sans), DM Sans",
-            fontSize: 11,
-            letterSpacing: "0.2em",
-            marginBottom: 16,
-          }}
-        >
-          ⚽ OPENING MATCH
-        </span>
+      {/* Opening match card */}
+      <div
+        className="mx-auto"
+        style={{
+          background: "rgba(0,0,0,0.65)",
+          border: "1px solid rgba(255,255,255,0.15)",
+          borderRadius: 12,
+          padding: "16px 32px",
+          maxWidth: 520,
+          margin: "28px auto 0",
+        }}
+      >
         <p
           style={{
-            fontFamily: "Bebas Neue, var(--font-display)",
-            color: "#8899aa",
+            fontFamily: "var(--font-sans), DM Sans",
+            color: "#f5a623",
+            fontSize: 11,
             letterSpacing: "0.15em",
-            fontSize: 18,
-            marginBottom: 12,
+            marginBottom: 10,
           }}
         >
-          JUNE 11, 2026 · 15:00 EST
+          ⚽ OPENING MATCH · JUNE 11, 2026 · 15:00 EST
         </p>
-
-        {/* Teams */}
         <p
           className="hidden sm:block"
           style={{
             fontFamily: "Bebas Neue, var(--font-display)",
-            color: "#ffffff",
-            letterSpacing: "0.1em",
-            fontSize: 36,
+            color: "#fff",
+            fontSize: 32,
             lineHeight: 1.1,
+            letterSpacing: "0.05em",
           }}
         >
           🇲🇽&nbsp;&nbsp;MEXICO&nbsp;&nbsp;
-          <span style={{ color: "#f5a623", fontSize: 28 }}>vs</span>
+          <span style={{ color: "#f5a623", fontSize: 24 }}>vs</span>
           &nbsp;&nbsp;SOUTH AFRICA&nbsp;&nbsp;🇿🇦
         </p>
         <div
           className="sm:hidden flex flex-col items-center"
           style={{
             fontFamily: "Bebas Neue, var(--font-display)",
-            color: "#ffffff",
-            letterSpacing: "0.1em",
-            fontSize: 24,
+            color: "#fff",
+            fontSize: 22,
             lineHeight: 1.2,
+            letterSpacing: "0.05em",
           }}
         >
           <span>🇲🇽 MEXICO</span>
-          <span style={{ color: "#f5a623", fontSize: 18 }}>vs</span>
+          <span style={{ color: "#f5a623", fontSize: 16 }}>vs</span>
           <span>SOUTH AFRICA 🇿🇦</span>
         </div>
-
         <p
           style={{
             fontFamily: "var(--font-sans), DM Sans",
-            color: "#445566",
-            fontSize: 13,
-            marginTop: 6,
+            color: "#8899aa",
+            fontSize: 12,
+            marginTop: 8,
           }}
         >
           Estadio Azteca · Mexico City, Mexico
         </p>
       </div>
 
+      {/* CTA */}
       <Link
         to="/simulator"
-        className="broadcast-cta inline-flex items-center justify-center mx-4 sm:mx-0"
+        className="broadcast-cta inline-flex items-center justify-center"
         style={{
-          marginTop: 36,
+          marginTop: 28,
           gap: 10,
-          background: "linear-gradient(135deg, #f5a623 0%, #e8941a 50%, #d4820f 100%)",
+          background: "linear-gradient(135deg, #f5a623 0%, #e8941a 60%, #d4820f 100%)",
           color: "#000",
           fontFamily: "Bebas Neue, var(--font-display)",
-          fontSize: 20,
-          letterSpacing: "0.12em",
-          padding: "18px 56px",
-          borderRadius: 3,
-          boxShadow: "0 4px 20px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.1)",
-          transition: "all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+          fontSize: 18,
+          letterSpacing: "0.1em",
+          padding: "16px 48px",
+          borderRadius: 4,
+          boxShadow: "0 4px 20px rgba(245,166,35,0.4)",
+          transition: "all 180ms ease",
         }}
       >
         ⚽ SIMULATE THE TOURNAMENT NOW
       </Link>
 
       <style>{`
-        @keyframes blink { 0%,100% { opacity: 0.8; } 50% { opacity: 0.2; } }
-        @keyframes goldPulse {
-          0%,100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); }
-          50%     { opacity: 1;   transform: translate(-50%,-50%) scale(1.1); }
-        }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
         .broadcast-cta:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 32px rgba(245,166,35,0.5), 0 0 80px rgba(245,166,35,0.15);
-          background: linear-gradient(135deg, #fdb93a 0%, #f5a623 100%) !important;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(245,166,35,0.6);
         }
-        .broadcast-cta:active { transform: translateY(-1px); }
       `}</style>
     </div>
   );
@@ -279,43 +350,9 @@ export function TournamentStatus() {
   return (
     <section
       className="relative w-full overflow-hidden rounded-2xl"
-      style={{
-        minHeight: 520,
-        background: "#000000",
-      }}
+      style={{ minHeight: 520 }}
     >
-      {/* Atmosphere gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20,10,0,0.9) 0%, #000000 100%)",
-        }}
-      />
-      {/* Golden center pulse */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          left: "50%",
-          top: "50%",
-          width: 600,
-          height: 300,
-          background:
-            "radial-gradient(ellipse, rgba(245,166,35,0.07) 0%, transparent 70%)",
-          transform: "translate(-50%,-50%)",
-          animation: "goldPulse 4s ease-in-out infinite",
-        }}
-      />
-      {/* Top vignette */}
-      <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{ height: 120, background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}
-      />
-      {/* Bottom vignette */}
-      <div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{ height: 120, background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)" }}
-      />
+      {phase === "pre" && <PitchBackground />}
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
