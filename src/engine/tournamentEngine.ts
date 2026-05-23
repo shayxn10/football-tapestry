@@ -217,25 +217,62 @@ export class TournamentEngine {
   }
 
   private resolveBestThirdPlaces(): void {
-    const all = Object.keys(this.state.groups);
-    if (all.length === 0 || !all.every(g => this.isGroupComplete(g))) return;
-    const thirds: TeamRecord[] = [];
-    for (const g of all) {
-      const third = this.state.groups[g][2];
-      if (third) thirds.push({ ...third, team: `${third.team}|${g}` });
+    const allGroups = Object.keys(this.state.groups);
+    if (allGroups.length === 0 || !allGroups.every(g => this.isGroupComplete(g))) return;
+
+    // Collect all third-place teams with source group
+    const thirdPlaceTeams: Array<{
+      team: string;
+      group: string;
+      points: number;
+      goalDifference: number;
+      goalsFor: number;
+    }> = [];
+    for (const groupId of allGroups) {
+      const table = this.state.groups[groupId];
+      const third = table[2];
+      if (third) {
+        thirdPlaceTeams.push({
+          team: third.team,
+          group: groupId,
+          points: third.points,
+          goalDifference: third.goalDifference,
+          goalsFor: third.goalsFor,
+        });
+      }
     }
-    thirds.sort((a, b) => compareTeams(a, b));
-    const best8 = thirds.slice(0, 8);
+
+    // FIFA tiebreakers: points → GD → GF
+    thirdPlaceTeams.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+      return b.goalsFor - a.goalsFor;
+    });
+
+    const best8 = thirdPlaceTeams.slice(0, 8);
+    const groupToTeam: Record<string, string> = {};
+    for (const t of best8) groupToTeam[t.group] = t.team;
+
+    // Assign most-restrictive (fewest eligible groups) slots first
     const assigned = new Set<string>();
-    for (const [slotId, eligible] of Object.entries(THIRD_PLACE_SLOT_GROUPS)) {
-      const m = best8.find(t => {
-        const [name, src] = t.team.split("|");
-        return eligible.includes(src) && !assigned.has(name);
-      });
-      if (m) {
-        const real = m.team.split("|")[0];
-        this.state.bracket[slotId] = real;
-        assigned.add(real);
+    const slotsByRestrictiveness = Object.entries(THIRD_PLACE_SLOT_GROUPS)
+      .sort((a, b) => a[1].length - b[1].length);
+
+    for (const [slotId, eligibleGroups] of slotsByRestrictiveness) {
+      let bestTeam: string | null = null;
+      let bestRank = Infinity;
+      for (const group of eligibleGroups) {
+        const team = groupToTeam[group];
+        if (!team || assigned.has(team)) continue;
+        const rank = best8.findIndex(t => t.team === team);
+        if (rank !== -1 && rank < bestRank) {
+          bestRank = rank;
+          bestTeam = team;
+        }
+      }
+      if (bestTeam) {
+        this.state.bracket[slotId] = bestTeam;
+        assigned.add(bestTeam);
       }
     }
   }
