@@ -83,18 +83,6 @@ function Colon({ hideOnMobile = false }: { hideOnMobile?: boolean }) {
   );
 }
 
-function Divider() {
-  return (
-    <div
-      style={{
-        height: 1,
-        margin: "24px 0",
-        background:
-          "linear-gradient(to right, transparent 0%, rgba(245,166,35,0.6) 20%, rgba(245,166,35,0.9) 50%, rgba(245,166,35,0.6) 80%, transparent 100%)",
-      }}
-    />
-  );
-}
 
 function PitchBackground() {
   // Pure CSS/SVG football pitch — scales perfectly at all sizes.
