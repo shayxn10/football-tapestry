@@ -22,10 +22,12 @@ export function SimulatorPage() {
   // Mode selection flow
   const [pickingTeam, setPickingTeam] = useState(false);
 
-  // Decide if a (fresh-engine) match needs user input
+  // Decide if a (fresh-engine) match needs user input.
+  // Full mode: every match. Journey mode: user's group games AND every KO match.
   const requiresUserInput = useCallback(
-    (m: { team1: string; team2: string }) => {
+    (m: { team1: string; team2: string; stage: string }) => {
       if (t.mode === "full") return true;
+      if (m.stage !== "group") return true; // KO: user picks all winners
       return m.team1 === t.selectedTeam || m.team2 === t.selectedTeam;
     },
     [t.mode, t.selectedTeam],
