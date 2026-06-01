@@ -141,14 +141,16 @@ export function SimulatorPage() {
         state={t.state}
         highlightTeam={t.selectedTeam}
         onPickWinner={(id, winner) => {
-          // Default 1-1 winner-on-pens unless current match in feed
-          if (currentMatch?.id === id) return;
           t.setMatchResult(id, { goals1: 1, goals2: 1, winnerId: winner });
         }}
       />
     );
-    // But if there's a current KO match needing input, override with match card
-    if (currentMatch && currentMatch.stage !== "group" && currentMatch.isReady && !currentMatch.isComplete) {
+    // Full-tournament mode keeps the sequential match card for KO matches.
+    if (
+      t.mode === "full" &&
+      currentMatch && currentMatch.stage !== "group" &&
+      currentMatch.isReady && !currentMatch.isComplete
+    ) {
       body = (
         <MatchSimulatorCard
           match={currentMatch}
