@@ -472,7 +472,7 @@ function MatchCard({
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.12 }}
             className="absolute z-50 bg-[#0a0f1c] border border-[#f5a623] rounded-md p-2 shadow-xl"
-            style={{ top: 60, left: 0, width: 220 }}
+            style={{ top: fullWidth ? 68 : 60, left: 0, width: fullWidth ? "100%" : 220 }}
           >
             <div className="text-[9px] uppercase tracking-widest text-[#8899aa] mb-1.5 font-mono">
               Pick winner
