@@ -55,6 +55,7 @@ export const BRACKET_TEMPLATE: Record<string, [string, string]> = {
   R32_M10: ["W_K", "R_L"],
   R32_M11: ["W_J", "T3_ABIJ"],
   R32_M12: ["W_L", "R_K"],
+  R32_M13: ["T3_CDGH", "T3_EFKL"],
   R32_M14: ["R_A", "R_B"],
   R32_M15: ["R_E", "R_F"],
   R32_M16: ["R_I", "R_J"],
@@ -64,7 +65,7 @@ export const BRACKET_TEMPLATE: Record<string, [string, string]> = {
   R16_M04: ["W_R32_M07", "W_R32_M08"],
   R16_M05: ["W_R32_M09", "W_R32_M10"],
   R16_M06: ["W_R32_M11", "W_R32_M12"],
-  R16_M07: ["W_R32_M14", "W_R32_M15"],
+  R16_M07: ["W_R32_M13", "W_R32_M14"],
   R16_M08: ["W_R32_M15", "W_R32_M16"],
   QF_M01: ["W_R16_M01", "W_R16_M02"],
   QF_M02: ["W_R16_M03", "W_R16_M04"],
@@ -83,6 +84,8 @@ export const THIRD_PLACE_SLOT_GROUPS: Record<string, string[]> = {
   T3_ABCD: ["A", "B", "C", "D"],
   T3_EFGH: ["E", "F", "G", "H"],
   T3_ABIJ: ["A", "B", "I", "J"],
+  T3_CDGH: ["C", "D", "G", "H"],
+  T3_EFKL: ["E", "F", "K", "L"],
 };
 
 export function compareTeams(a: TeamRecord, b: TeamRecord, headToHead?: Record<string, TeamRecord>): number {

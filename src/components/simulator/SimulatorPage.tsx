@@ -243,13 +243,21 @@ export function SimulatorPage() {
       />
 
       <AnimatePresence>
-        {showChampion && t.champion && (
-          <ChampionReveal
-            champion={t.champion}
-            isUserTeam={t.mode === "journey" && t.selectedTeam === t.champion}
-            onDismiss={() => setShowChampion(false)}
-          />
-        )}
+        {showChampion && t.champion && (() => {
+          const fm = t.state.resolvedMatches["F_M01"];
+          const fr = t.state.results["F_M01"];
+          const runnerUp = fm ? (fm.team1 === t.champion ? fm.team2 : fm.team1) : null;
+          const score = fr ? `${Math.max(fr.goals1, fr.goals2)}-${Math.min(fr.goals1, fr.goals2)}` : "";
+          return (
+            <ChampionReveal
+              champion={t.champion}
+              runnerUp={runnerUp}
+              finalScore={score}
+              isUserTeam={t.mode === "journey" && t.selectedTeam === t.champion}
+              onDismiss={() => setShowChampion(false)}
+            />
+          );
+        })()}
       </AnimatePresence>
 
     </div>
