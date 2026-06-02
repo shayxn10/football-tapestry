@@ -1,13 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import html2canvas from "html2canvas";
 import { TEAM_CODES } from "@/utils/teamCodes";
 const trophyImg = "/assets/trophy.png";
 
-interface Props {
+export interface TopFour {
   champion: string;
   runnerUp?: string | null;
+  third?: string | null;
+  fourth?: string | null;
+}
+
+interface Props extends TopFour {
   finalScore?: string;
   isUserTeam?: boolean;
   onDismiss: () => void;
@@ -23,18 +28,31 @@ const SHARE_BTN: React.CSSProperties = {
   fontSize: 13,
   cursor: "pointer",
   transition: "all 160ms ease",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
 };
 
-export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onDismiss }: Props) {
-  const fired = useRef(false);
-  const meta = TEAM_CODES[champion] ?? { code: champion.slice(0, 3).toUpperCase(), flag: "🏆" };
-  const runnerMeta = runnerUp ? TEAM_CODES[runnerUp] ?? { code: runnerUp.slice(0, 3).toUpperCase(), flag: "🏳️" } : null;
-  const [copyLabel, setCopyLabel] = useState("🔗 Copy Link");
-  const [canNativeShare, setCanNativeShare] = useState(false);
+function metaOf(team?: string | null) {
+  if (!team) return { code: "TBD", flag: "🏳️" };
+  return TEAM_CODES[team] ?? { code: team.slice(0, 3).toUpperCase(), flag: "🏳️" };
+}
 
-  useEffect(() => {
-    setCanNativeShare(typeof navigator !== "undefined" && typeof navigator.share === "function");
-  }, []);
+const XLogo = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M18.244 2H21.5l-7.5 8.57L23 22h-6.844l-5.36-6.99L4.6 22H1.34l8.02-9.17L1 2h6.91l4.85 6.41L18.244 2Zm-1.2 18h1.86L7.06 4H5.1l11.945 16Z" />
+  </svg>
+);
+
+export function ChampionReveal({
+  champion, runnerUp, third, fourth, finalScore, isUserTeam, onDismiss,
+}: Props) {
+  const fired = useRef(false);
+  const meta = metaOf(champion);
+  const runnerMeta = metaOf(runnerUp);
+  const thirdMeta = metaOf(third);
+  const fourthMeta = metaOf(fourth);
 
   useEffect(() => {
     if (fired.current) return;
@@ -51,52 +69,42 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
   }, []);
 
   const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const scoreLine = runnerUp && finalScore
-    ? `Final: ${champion} ${finalScore} ${runnerUp}`
-    : `${champion} are World Champions`;
-
-  async function handleNativeShare() {
-    const shareData = {
-      title: "FIFA World Cup 2026 Simulator",
-      text: `🏆 ${champion} are World Champions in my FIFA World Cup 2026 simulation!\n\nWho wins yours?`,
-      url: shareUrl,
-    };
-    if (navigator.share) {
-      try { await navigator.share(shareData); } catch { /* cancelled */ }
-    } else {
-      handleCopyLink();
-    }
-  }
 
   function handleTweet() {
-    const tweetText = encodeURIComponent(
-      `🏆 ${meta.flag} ${champion} are World Champions!\n\n` +
-      (runnerUp && finalScore ? `Final: ${champion} ${finalScore} ${runnerUp}\n\n` : "") +
-      `Simulated on the FIFA World Cup 2026 Simulator 👇\n` +
-      `#WorldCup2026 #FIFA2026 #${champion.replace(/\s+/g, "")}`
-    );
-    const url = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(shareUrl)}`;
+    const lines = [
+      `🏆 ${meta.flag} ${champion} are FIFA World Cup 2026 Champions!`,
+      "",
+      "🥇 " + champion,
+      runnerUp ? `🥈 ${runnerUp}` : "",
+      third ? `🥉 ${third}` : "",
+      fourth ? `4️⃣ ${fourth}` : "",
+      "",
+      "Simulate yours 👇",
+      "#WorldCup2026 #FIFA2026",
+    ].filter(Boolean).join("\n");
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(lines)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   }
 
   async function handleDownload() {
     const card = document.getElementById("share-card");
     if (!card) return;
-    const canvas = await html2canvas(card, { backgroundColor: "#000000", scale: 2 });
-    const link = document.createElement("a");
-    link.download = `wc2026-${champion.toLowerCase().replace(/\s+/g, "-")}-champion.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }
-
-  async function handleCopyLink() {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopyLabel("✓ Copied!");
-      setTimeout(() => setCopyLabel("🔗 Copy Link"), 2000);
-    } catch {
-      setCopyLabel("✗ Failed");
-      setTimeout(() => setCopyLabel("🔗 Copy Link"), 2000);
+      const canvas = await html2canvas(card, {
+        backgroundColor: "#000000",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      const link = document.createElement("a");
+      link.download = `wc2026-${champion.toLowerCase().replace(/\s+/g, "-")}-top4.png`;
+      link.href = canvas.toDataURL("image/png");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("[download] failed", err);
+      alert("Sorry — couldn't generate the image. Try again.");
     }
   }
 
@@ -182,7 +190,7 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
       <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 3.6, duration: 0.4 }}
-        className="mt-10 w-full max-w-2xl"
+        className="mt-10 w-full max-w-md"
       >
         <p
           className="text-center"
@@ -196,21 +204,7 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
         >
           SHARE YOUR RESULT
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-2">
-          {canNativeShare && (
-            <button
-              style={SHARE_BTN}
-              onClick={handleNativeShare}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(245,166,35,0.1)";
-                e.currentTarget.style.borderColor = "rgba(245,166,35,0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
-              }}
-            >📱 Share</button>
-          )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 px-2">
           <button
             style={SHARE_BTN}
             onClick={handleTweet}
@@ -222,7 +216,9 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
               e.currentTarget.style.background = "rgba(255,255,255,0.05)";
               e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
             }}
-          >🐦 Post on X</button>
+          >
+            <XLogo /> Post on X
+          </button>
           <button
             style={SHARE_BTN}
             onClick={handleDownload}
@@ -234,19 +230,9 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
               e.currentTarget.style.background = "rgba(255,255,255,0.05)";
               e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
             }}
-          >📸 Download</button>
-          <button
-            style={SHARE_BTN}
-            onClick={handleCopyLink}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(245,166,35,0.1)";
-              e.currentTarget.style.borderColor = "rgba(245,166,35,0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
-            }}
-          >{copyLabel}</button>
+          >
+            📸 Download Top 4
+          </button>
         </div>
       </motion.div>
 
@@ -260,67 +246,151 @@ export function ChampionReveal({ champion, runnerUp, finalScore, isUserTeam, onD
         Continue →
       </motion.button>
 
-      {/* Hidden share card for png export */}
+      {/* Hidden share card for PNG export — TOP 4 layout */}
       <div
         id="share-card"
         style={{
           position: "fixed",
-          left: -9999,
+          left: -10000,
           top: 0,
-          width: 600,
-          height: 400,
-          background: "#000000",
-          borderTop: "4px solid #f5a623",
-          padding: "32px 40px",
+          width: 720,
+          height: 540,
+          background: "linear-gradient(180deg, #0a0a0a 0%, #1a1208 100%)",
+          borderTop: "6px solid #f5a623",
+          padding: "28px 36px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "flex-start",
           fontFamily: "DM Sans, system-ui, sans-serif",
           color: "#ffffff",
+          boxSizing: "border-box",
         }}
       >
         <div style={{
           fontFamily: "Bebas Neue, var(--font-display)",
-          fontSize: 14,
-          letterSpacing: "0.25em",
+          fontSize: 13,
+          letterSpacing: "0.3em",
           color: "#8899aa",
         }}>
-          ⚽ FIFA WORLD CUP 2026 SIMULATOR
+          ⚽ FIFA WORLD CUP 2026 · TOP 4
         </div>
-        <div style={{ fontSize: 60, lineHeight: 1, marginTop: 14 }}>{meta.flag}</div>
+
         <div style={{
           fontFamily: "Bebas Neue, var(--font-display)",
-          fontSize: 48,
-          color: "#f5a623",
-          lineHeight: 1,
-          marginTop: 10,
-          letterSpacing: "0.05em",
-        }}>{champion.toUpperCase()}</div>
-        <div style={{
-          fontFamily: "Bebas Neue, var(--font-display)",
-          fontSize: 24,
+          fontSize: 34,
           color: "#ffffff",
-          lineHeight: 1,
           marginTop: 8,
-          letterSpacing: "0.15em",
-        }}>ARE WORLD CHAMPIONS</div>
-        {runnerMeta && finalScore && (
-          <div style={{ fontSize: 16, color: "#8899aa", marginTop: 14 }}>
+          letterSpacing: "0.1em",
+        }}>
+          FINAL STANDINGS
+        </div>
+
+        <div style={{
+          width: 140,
+          height: 2,
+          background: "linear-gradient(90deg, transparent, #f5a623, transparent)",
+          marginTop: 8,
+          marginBottom: 18,
+        }} />
+
+        {/* Podium row */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
+          <PodiumRow
+            place="1"
+            medal="🥇"
+            label="CHAMPION"
+            team={champion}
+            flag={meta.flag}
+            accent="#f5a623"
+            bg="rgba(245,166,35,0.14)"
+            border="rgba(245,166,35,0.55)"
+            big
+          />
+          <PodiumRow
+            place="2"
+            medal="🥈"
+            label="RUNNER-UP"
+            team={runnerUp ?? "—"}
+            flag={runnerMeta.flag}
+            accent="#c9c9d1"
+            bg="rgba(200,200,210,0.08)"
+            border="rgba(200,200,210,0.35)"
+          />
+          <PodiumRow
+            place="3"
+            medal="🥉"
+            label="THIRD PLACE"
+            team={third ?? "—"}
+            flag={thirdMeta.flag}
+            accent="#cd7f32"
+            bg="rgba(205,127,50,0.10)"
+            border="rgba(205,127,50,0.45)"
+          />
+          <PodiumRow
+            place="4"
+            medal="4"
+            label="FOURTH PLACE"
+            team={fourth ?? "—"}
+            flag={fourthMeta.flag}
+            accent="#8899aa"
+            bg="rgba(136,153,170,0.08)"
+            border="rgba(136,153,170,0.30)"
+          />
+        </div>
+
+        {finalScore && runnerUp && (
+          <div style={{ fontSize: 12, color: "#8899aa", marginTop: 14 }}>
             Final: {champion} {finalScore} {runnerUp}
           </div>
         )}
-        <div style={{
-          width: 120,
-          height: 1,
-          background: "linear-gradient(90deg, transparent, #f5a623, transparent)",
-          marginTop: 18,
-        }} />
-        <div style={{ fontSize: 11, color: "#8899aa", marginTop: 14 }}>Simulate yours:</div>
-        <div style={{ fontFamily: "DM Sans, system-ui, sans-serif", fontSize: 12, color: "#f5a623", marginTop: 4 }}>
+
+        <div style={{ flex: 1 }} />
+        <div style={{ fontSize: 10, color: "#8899aa" }}>Simulate yours:</div>
+        <div style={{ fontFamily: "DM Sans, system-ui, sans-serif", fontSize: 12, color: "#f5a623", marginTop: 2 }}>
           football-tapestry.lovable.app
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function PodiumRow({
+  place, medal, label, team, flag, accent, bg, border, big,
+}: {
+  place: string; medal: string; label: string; team: string; flag: string;
+  accent: string; bg: string; border: string; big?: boolean;
+}) {
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      padding: big ? "14px 18px" : "10px 18px",
+      background: bg,
+      border: `1px solid ${border}`,
+      borderRadius: 8,
+      width: "100%",
+      boxSizing: "border-box",
+    }}>
+      <div style={{
+        width: 40, textAlign: "center",
+        fontFamily: "Bebas Neue, var(--font-display)",
+        fontSize: big ? 36 : 26, color: accent, lineHeight: 1,
+      }}>{place}</div>
+      <div style={{ fontSize: big ? 36 : 28, lineHeight: 1 }}>{medal}</div>
+      <div style={{ fontSize: big ? 34 : 26, lineHeight: 1 }}>{flag}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontFamily: "Bebas Neue, var(--font-display)",
+          fontSize: big ? 28 : 20, color: "#ffffff",
+          letterSpacing: "0.06em", lineHeight: 1,
+        }}>{team}</div>
+        <div style={{
+          fontFamily: "DM Sans, system-ui, sans-serif",
+          fontSize: 10, color: "#8899aa", letterSpacing: "0.2em",
+          marginTop: 4,
+        }}>{label}</div>
+      </div>
+    </div>
   );
 }
