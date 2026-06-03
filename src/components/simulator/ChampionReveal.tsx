@@ -204,9 +204,9 @@ export function ChampionReveal({
         >
           SHARE YOUR RESULT
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 px-2">
+        <div className="flex justify-center px-2">
           <button
-            style={SHARE_BTN}
+            style={{ ...SHARE_BTN, minWidth: 220 }}
             onClick={handleTweet}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(245,166,35,0.1)";
@@ -218,20 +218,6 @@ export function ChampionReveal({
             }}
           >
             <XLogo /> Post on X
-          </button>
-          <button
-            style={SHARE_BTN}
-            onClick={handleDownload}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(245,166,35,0.1)";
-              e.currentTarget.style.borderColor = "rgba(245,166,35,0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
-            }}
-          >
-            📸 Download Top 4
           </button>
         </div>
       </motion.div>
