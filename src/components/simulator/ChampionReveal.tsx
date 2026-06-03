@@ -51,6 +51,8 @@ export function ChampionReveal({
   champion, runnerUp, third, fourth, finalScore, isUserTeam, onDismiss,
 }: Props) {
   const fired = useRef(false);
+  const recorded = useRef(false);
+  const [lbKey, setLbKey] = useState(0);
   const meta = metaOf(champion);
   const runnerMeta = metaOf(runnerUp);
   const thirdMeta = metaOf(third);
