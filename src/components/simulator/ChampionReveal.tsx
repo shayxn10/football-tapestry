@@ -234,6 +234,29 @@ export function ChampionReveal({
         </div>
       </motion.div>
 
+      {/* Leaderboard */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 3.8, duration: 0.4 }}
+        className="mt-10 w-full"
+        style={{ maxWidth: 480 }}
+      >
+        <p
+          className="text-center"
+          style={{
+            fontFamily: "Bebas Neue, var(--font-display)",
+            fontSize: 14,
+            color: "#8899aa",
+            letterSpacing: "0.2em",
+            marginBottom: 12,
+          }}
+        >
+          SEE HOW OTHERS SIMULATED
+        </p>
+        <SimulatorLeaderboard refreshKey={lbKey} />
+      </motion.div>
+
+
       <motion.button
         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         transition={{ delay: 4.0, duration: 0.3 }}
