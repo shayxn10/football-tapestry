@@ -61,16 +61,79 @@ export function ChampionReveal({
   useEffect(() => {
     if (fired.current) return;
     fired.current = true;
-    const colors = ["#f5a623", "#ffffff", "#e63946"];
-    const end = Date.now() + 4000;
-    const fire = () => {
-      confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0, y: 1 }, colors });
-      confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1, y: 1 }, colors });
-      if (Date.now() < end) requestAnimationFrame(fire);
+
+    const TEAM_CONFETTI_COLORS: Record<string, string[]> = {
+      "Argentina": ["#74ACDF", "#ffffff", "#F5A623"],
+      "France": ["#002395", "#ffffff", "#ED2939"],
+      "Brazil": ["#009C3B", "#FFDF00", "#002776"],
+      "England": ["#ffffff", "#CF091B", "#F5A623"],
+      "Spain": ["#c60b1e", "#f1bf00", "#ffffff"],
+      "Portugal": ["#006600", "#ff0000", "#ffffff"],
+      "Germany": ["#000000", "#DD0000", "#FFCE00"],
+      "Netherlands": ["#FF6600", "#ffffff", "#003DA5"],
+      "Belgium": ["#000000", "#FDDA24", "#EF3340"],
+      "Uruguay": ["#5EB6E4", "#ffffff", "#F5A623"],
+      "Morocco": ["#C1272D", "#006233", "#ffffff"],
+      "Colombia": ["#FCD116", "#003087", "#CE1126"],
+      "Croatia": ["#FF0000", "#ffffff", "#003DA5"],
+      "USA": ["#B22234", "#ffffff", "#3C3B6E"],
+      "Mexico": ["#006847", "#ffffff", "#CE1126"],
+      "Japan": ["#BC002D", "#ffffff", "#F5A623"],
+      "Senegal": ["#00853F", "#FDEF42", "#E31B23"],
+      "Switzerland": ["#FF0000", "#ffffff", "#F5A623"],
+      "Ecuador": ["#FFD100", "#003DA5", "#CE1126"],
+      "Canada": ["#FF0000", "#ffffff", "#F5A623"],
     };
-    const t = setTimeout(fire, 300);
-    return () => clearTimeout(t);
-  }, []);
+    const champColors = TEAM_CONFETTI_COLORS[champion] ?? ["#f5a623", "#ffffff", "#ffd700", "#c0a060"];
+    const goldColors = ["#f5a623", "#ffffff", "#ffd700"];
+
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    let interval: ReturnType<typeof setInterval> | undefined;
+
+    const timer = setTimeout(() => {
+      confetti({
+        particleCount: 120, angle: 60, spread: 70,
+        origin: { x: 0, y: 0.75 },
+        colors: champColors, gravity: 0.8, scalar: 1.2, drift: 0.5,
+      });
+      timeouts.push(setTimeout(() => {
+        confetti({
+          particleCount: 120, angle: 120, spread: 70,
+          origin: { x: 1, y: 0.75 },
+          colors: champColors, gravity: 0.8, scalar: 1.2, drift: -0.5,
+        });
+      }, 50));
+      timeouts.push(setTimeout(() => {
+        confetti({
+          particleCount: 200, angle: 90, spread: 120,
+          origin: { x: 0.5, y: 0 },
+          colors: champColors, gravity: 0.6, scalar: 0.9, ticks: 300,
+        });
+      }, 300));
+      let count = 0;
+      interval = setInterval(() => {
+        count++;
+        confetti({
+          particleCount: 60, angle: 60, spread: 55,
+          origin: { x: 0, y: 0.8 },
+          colors: goldColors, gravity: 0.9, scalar: 1.0,
+        });
+        confetti({
+          particleCount: 60, angle: 120, spread: 55,
+          origin: { x: 1, y: 0.8 },
+          colors: goldColors, gravity: 0.9, scalar: 1.0,
+        });
+        if (count >= 5 && interval) clearInterval(interval);
+      }, 600);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      timeouts.forEach(clearTimeout);
+      if (interval) clearInterval(interval);
+      confetti.reset();
+    };
+  }, [champion]);
 
   useEffect(() => {
     if (recorded.current) return;
