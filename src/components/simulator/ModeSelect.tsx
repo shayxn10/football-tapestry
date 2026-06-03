@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import groupsImg from "@/assets/wc2026-groups.png";
+import { SimulatorLeaderboard } from "@/components/simulator/SimulatorLeaderboard";
 
 interface Props {
   onSelect: (mode: "full" | "journey") => void;
