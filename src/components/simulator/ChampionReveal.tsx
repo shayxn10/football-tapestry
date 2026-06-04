@@ -87,24 +87,36 @@ export function ChampionReveal({
     const champColors = TEAM_CONFETTI_COLORS[champion] ?? ["#f5a623", "#ffffff", "#ffd700", "#c0a060"];
     const goldColors = ["#f5a623", "#ffffff", "#ffd700"];
 
+    // Create a dedicated canvas overlaid above the reveal modal so confetti is visible
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.inset = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = "10000";
+    document.body.appendChild(canvas);
+
+    const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
+
     const timeouts: ReturnType<typeof setTimeout>[] = [];
     let interval: ReturnType<typeof setInterval> | undefined;
 
     const timer = setTimeout(() => {
-      confetti({
+      myConfetti({
         particleCount: 120, angle: 60, spread: 70,
         origin: { x: 0, y: 0.75 },
         colors: champColors, gravity: 0.8, scalar: 1.2, drift: 0.5,
       });
       timeouts.push(setTimeout(() => {
-        confetti({
+        myConfetti({
           particleCount: 120, angle: 120, spread: 70,
           origin: { x: 1, y: 0.75 },
           colors: champColors, gravity: 0.8, scalar: 1.2, drift: -0.5,
         });
       }, 50));
       timeouts.push(setTimeout(() => {
-        confetti({
+        myConfetti({
           particleCount: 200, angle: 90, spread: 120,
           origin: { x: 0.5, y: 0 },
           colors: champColors, gravity: 0.6, scalar: 0.9, ticks: 300,
@@ -113,25 +125,26 @@ export function ChampionReveal({
       let count = 0;
       interval = setInterval(() => {
         count++;
-        confetti({
+        myConfetti({
           particleCount: 60, angle: 60, spread: 55,
           origin: { x: 0, y: 0.8 },
           colors: goldColors, gravity: 0.9, scalar: 1.0,
         });
-        confetti({
+        myConfetti({
           particleCount: 60, angle: 120, spread: 55,
           origin: { x: 1, y: 0.8 },
           colors: goldColors, gravity: 0.9, scalar: 1.0,
         });
         if (count >= 5 && interval) clearInterval(interval);
       }, 600);
-    }, 500);
+    }, 1800);
 
     return () => {
       clearTimeout(timer);
       timeouts.forEach(clearTimeout);
       if (interval) clearInterval(interval);
-      confetti.reset();
+      myConfetti.reset();
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };
   }, [champion]);
 
