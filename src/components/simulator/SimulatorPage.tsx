@@ -23,16 +23,16 @@ export function SimulatorPage() {
   const [pickingTeam, setPickingTeam] = useState(false);
 
   // Decide if a (fresh-engine) match needs user input.
-  // Full mode: every match. Journey mode: ONLY the user's 3 group games —
-  // all KO matches auto-simulate and show in the bracket view.
+  // Full mode: every match. Journey mode: user's group games AND every KO match.
   const requiresUserInput = useCallback(
     (m: { team1: string; team2: string; stage: string }) => {
       if (t.mode === "full") return true;
-      if (m.stage !== "group") return false;
+      if (m.stage !== "group") return true; // KO handled via bracket picker
       return m.team1 === t.selectedTeam || m.team2 === t.selectedTeam;
     },
     [t.mode, t.selectedTeam],
   );
+
 
 
   // Auto-advance: always read fresh engine state. Hard-stop on isReady=false.
@@ -49,11 +49,15 @@ export function SimulatorPage() {
       stoppedAt = null;
       for (const m of ordered) {
         if (m.isComplete) continue;
+        // Journey mode: never surface KO matches as a card — they're picked
+        // via the bracket once the group stage finishes.
+        if (t.mode === "journey" && m.stage !== "group") continue;
         // Skip matches whose teams aren't resolved yet — don't stop on them.
         if (!m.isReady) continue;
         const t1 = resolveTeamName(m.team1, fresh.bracket);
         const t2 = resolveTeamName(m.team2, fresh.bracket);
         if (t1 === "TBD" || t2 === "TBD") continue;
+
         if (requiresUserInput(m)) { stoppedAt = m.id; break; }
         // Auto-simulate this ready match using weighted strengths.
         const r = weightedAutoSimulate(t1, t2);
