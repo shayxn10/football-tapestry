@@ -44,13 +44,14 @@ export function SimulatorPage() {
         .map(id => fresh.resolvedMatches[id])
         .filter((m): m is NonNullable<typeof m> => Boolean(m));
       let didMutate = false;
+      stoppedAt = null;
       for (const m of ordered) {
         if (m.isComplete) continue;
-        if (!m.isReady) { stoppedAt = m.id; break; }
-        // Resolve teams; if anything still TBD, hard stop.
+        // Skip matches whose teams aren't resolved yet — don't stop on them.
+        if (!m.isReady) continue;
         const t1 = resolveTeamName(m.team1, fresh.bracket);
         const t2 = resolveTeamName(m.team2, fresh.bracket);
-        if (t1 === "TBD" || t2 === "TBD") { stoppedAt = m.id; break; }
+        if (t1 === "TBD" || t2 === "TBD") continue;
         if (requiresUserInput(m)) { stoppedAt = m.id; break; }
         // Auto-simulate this ready match using weighted strengths.
         const r = weightedAutoSimulate(t1, t2);
@@ -71,6 +72,7 @@ export function SimulatorPage() {
       if (idx >= 0 && idx !== t.currentIndex) t.setCurrentIndex(idx);
     }
   }, [t.mode, t.currentIndex, t.setMatchResult, t.setCurrentIndex, requiresUserInput]);
+
 
   useEffect(() => { advance(); }, [advance, t.state]);
 
