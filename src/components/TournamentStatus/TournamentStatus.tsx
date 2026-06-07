@@ -349,7 +349,7 @@ export function TournamentStatus() {
 
   return (
     <section
-      className="relative w-full overflow-hidden rounded-2xl"
+      className="relative w-full overflow-hidden"
       style={{ minHeight: 520 }}
     >
       {phase === "pre" && <PitchBackground />}
