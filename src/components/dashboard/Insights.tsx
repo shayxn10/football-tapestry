@@ -11,8 +11,18 @@ export function Insights() {
     <section className="space-y-5">
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Analytical findings · correlation, not causation</p>
-          <h2 className="text-3xl sm:text-4xl font-bold">Key Insights</h2>
+          <p
+            className="text-xs font-mono uppercase font-bold mb-3"
+            style={{ letterSpacing: "0.2em", color: "#F47920" }}
+          >
+            05 — Analytical Findings · correlation, not causation
+          </p>
+          <h2
+            className="text-3xl sm:text-[36px] font-black leading-[1.05]"
+            style={{ letterSpacing: "-0.02em", color: "var(--color-text-1)" }}
+          >
+            Key Insights
+          </h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
             All values below describe relationships between variables observed in the dataset.
             Correlation coefficients (<span className="font-mono">r</span>) are reported as comparative trends — they do not imply causation.
