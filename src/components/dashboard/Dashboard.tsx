@@ -220,6 +220,11 @@ export function Dashboard() {
               </div>
             </div>
           </div>
+          <div
+            className="pointer-events-none absolute left-0 right-0 bottom-0"
+            style={{ height: 80, background: "linear-gradient(to bottom, transparent, var(--color-bg))" }}
+            aria-hidden
+          />
         </motion.section>
 
         {/* TOURNAMENT STATUS — three-phase block */}
