@@ -470,12 +470,15 @@ export function Dashboard() {
         </section>
 
         {/* FOOTER */}
-        <footer className="border-t border-border/60 pt-8 pb-12 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground font-mono">
-          <div>FIFA WORLD CUP ANALYTICS · BUILT WITH REACT + RECHARTS</div>
-          <div className="flex gap-4">
-            <span>DATA: FIFA · STATSBOMB</span>
-            <span className="text-pitch">● LIVE</span>
+        <footer className="border-t border-border/60 pt-8 pb-12 relative">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground font-mono">
+            <div>FIFA WORLD CUP ANALYTICS · BUILT WITH REACT + RECHARTS</div>
+            <div className="flex gap-4">
+              <span>DATA: FIFA · STATSBOMB</span>
+              <span style={{ color: "var(--color-green)" }}>● LIVE</span>
+            </div>
           </div>
+          <div className="fifa-stripe absolute left-0 right-0 bottom-0" style={{ height: 8 }} aria-hidden />
         </footer>
       </main>
     </div>
