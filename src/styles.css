@@ -45,38 +45,60 @@
 
 :root {
   --radius: 0.5rem;
-  /* Dark sports analytics — Opta/ESPN inspired with FIFA 26 pop colors */
-  --background: oklch(0.16 0.02 270);
-  --foreground: oklch(0.98 0.005 250);
-  --card: oklch(0.21 0.025 265);
-  --card-foreground: oklch(0.98 0.005 250);
-  --popover: oklch(0.21 0.025 265);
-  --popover-foreground: oklch(0.98 0.005 250);
-  --primary: oklch(0.78 0.19 145); /* pitch lime */
-  --primary-foreground: oklch(0.15 0.02 270);
-  --secondary: oklch(0.27 0.03 265);
-  --secondary-foreground: oklch(0.98 0.005 250);
-  --muted: oklch(0.24 0.025 265);
-  --muted-foreground: oklch(0.68 0.02 260);
-  --accent: oklch(0.7 0.21 25); /* FIFA red */
-  --accent-foreground: oklch(0.98 0.005 250);
-  --destructive: oklch(0.65 0.24 25);
-  --destructive-foreground: oklch(0.98 0.005 250);
-  --border: oklch(0.3 0.025 265);
-  --input: oklch(0.28 0.025 265);
-  --ring: oklch(0.78 0.19 145);
+  /* Unified design system — gold-accented dark analytics */
+  --background: #080c14;
+  --foreground: #f0f4ff;
+  --card: #0f1623;
+  --card-foreground: #f0f4ff;
+  --popover: #0f1623;
+  --popover-foreground: #f0f4ff;
+  --primary: #f5a623;
+  --primary-foreground: #080c14;
+  --secondary: #161f2e;
+  --secondary-foreground: #f0f4ff;
+  --muted: #161f2e;
+  --muted-foreground: #8899aa;
+  --accent: #f5a623;
+  --accent-foreground: #080c14;
+  --destructive: #e63946;
+  --destructive-foreground: #f0f4ff;
+  --border: #1e2d42;
+  --input: #1e2d42;
+  --ring: #f5a623;
 
-  --pitch: oklch(0.78 0.19 145);
-  --magenta: oklch(0.65 0.27 340);
-  --cyan: oklch(0.78 0.16 210);
-  --amber: oklch(0.82 0.17 80);
-  --lime: oklch(0.88 0.2 125);
+  --color-bg: #080c14;
+  --color-surface: #0f1623;
+  --color-elevated: #161f2e;
+  --color-border: #1e2d42;
+  --color-gold: #f5a623;
+  --color-gold-dim: rgba(245,166,35,0.15);
+  --color-green: #22c55e;
+  --color-red: #e63946;
+  --color-text-1: #f0f4ff;
+  --color-text-2: #8899aa;
+  --color-text-3: #445566;
 
-  --chart-1: oklch(0.78 0.19 145);
-  --chart-2: oklch(0.78 0.16 210);
-  --chart-3: oklch(0.82 0.17 80);
-  --chart-4: oklch(0.65 0.27 340);
-  --chart-5: oklch(0.7 0.21 25);
+  /* Legacy chart tokens remapped to unified palette */
+  --pitch: #22c55e;       /* success / completed */
+  --magenta: #e63946;     /* negative / live */
+  --cyan: #3b82f6;        /* muted blue */
+  --amber: #f5a623;       /* gold */
+  --lime: #22c55e;
+
+  --chart-1: #f5a623;
+  --chart-2: #22c55e;
+  --chart-3: #3b82f6;
+  --chart-4: #f0f4ff;
+  --chart-5: #1e2d42;
+
+  /* FIFA 2026 brand sequence */
+  --fifa-teal:   #00B4B4;
+  --fifa-yellow: #FFD700;
+  --fifa-orange: #F47920;
+  --fifa-red:    #E8143C;
+  --fifa-purple: #7B2D8B;
+  --fifa-green:  #00A651;
+  --fifa-blue:   #0033A0;
 }
 
 @layer base {
@@ -84,20 +106,28 @@
     border-color: var(--color-border);
   }
   html, body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-display);
     -webkit-font-smoothing: antialiased;
     background-image:
-      radial-gradient(ellipse 80% 60% at 0% 0%, color-mix(in oklab, var(--pitch) 12%, transparent), transparent 60%),
-      radial-gradient(ellipse 60% 50% at 100% 10%, color-mix(in oklab, var(--magenta) 14%, transparent), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in oklab, var(--cyan) 10%, transparent), transparent 60%);
+      radial-gradient(ellipse 80% 60% at 0% 0%, rgba(245,166,35,0.05), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 10%, rgba(34,197,94,0.04), transparent 60%);
     background-attachment: fixed;
   }
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-    font-weight: 700;
-  }
+  h1, h2 { letter-spacing: -0.02em; font-weight: 800; }
+  h3, h4 { letter-spacing: -0.01em; font-weight: 700; }
+}
+
+@utility fifa-stripe {
+  background: linear-gradient(to right,
+    var(--fifa-teal)   0%, var(--fifa-teal)   14.28%,
+    var(--fifa-yellow) 14.28%, var(--fifa-yellow) 28.57%,
+    var(--fifa-orange) 28.57%, var(--fifa-orange) 42.85%,
+    var(--fifa-red)    42.85%, var(--fifa-red)    57.14%,
+    var(--fifa-purple) 57.14%, var(--fifa-purple) 71.42%,
+    var(--fifa-green)  71.42%, var(--fifa-green)  85.71%,
+    var(--fifa-blue)   85.71%, var(--fifa-blue)   100%);
 }
 
 @layer utilities {
