@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-const BASE = "https://api.football-data.org/v4";
-const COMPETITION = "WC";
+// Calls our own server-side proxy (football-data.org blocks browser CORS).
+const BASE = "/api/public/wc-matches";
 const CACHE_KEY = "wc2026_live_scores_v2";
 const TOURNAMENT_START = new Date("2026-06-11T15:00:00-06:00");
 const TOURNAMENT_END = new Date("2026-07-19T23:59:59-04:00");
@@ -109,17 +109,10 @@ export function useLiveScores() {
   const lastFetchRef = useRef<number>(cached?.ts ?? 0);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_FOOTBALL_DATA_KEY as string | undefined;
-    if (!apiKey) {
-      setState(s => ({ ...s, loading: false, error: "no-api-key" }));
-      return;
-    }
-
     let cancelled = false;
-    const headers = { "X-Auth-Token": apiKey };
 
     async function fetchMatches(params: string): Promise<FDMatch[]> {
-      const res = await fetch(`${BASE}/competitions/${COMPETITION}/matches${params}`, { headers });
+      const res = await fetch(`${BASE}${params}`);
       if (res.status === 429) {
         const err = new Error("rate-limit");
         (err as Error & { code?: number }).code = 429;

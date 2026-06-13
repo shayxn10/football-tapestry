@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SimulatorRouteImport } from './routes/simulator'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicWcMatchesRouteImport } from './routes/api/public/wc-matches'
 
 const SimulatorRoute = SimulatorRouteImport.update({
   id: '/simulator',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWcMatchesRoute = ApiPublicWcMatchesRouteImport.update({
+  id: '/api/public/wc-matches',
+  path: '/api/public/wc-matches',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/simulator': typeof SimulatorRoute
+  '/api/public/wc-matches': typeof ApiPublicWcMatchesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/simulator': typeof SimulatorRoute
+  '/api/public/wc-matches': typeof ApiPublicWcMatchesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/simulator': typeof SimulatorRoute
+  '/api/public/wc-matches': typeof ApiPublicWcMatchesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/simulator'
+  fullPaths: '/' | '/simulator' | '/api/public/wc-matches'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/simulator'
-  id: '__root__' | '/' | '/simulator'
+  to: '/' | '/simulator' | '/api/public/wc-matches'
+  id: '__root__' | '/' | '/simulator' | '/api/public/wc-matches'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SimulatorRoute: typeof SimulatorRoute
+  ApiPublicWcMatchesRoute: typeof ApiPublicWcMatchesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/wc-matches': {
+      id: '/api/public/wc-matches'
+      path: '/api/public/wc-matches'
+      fullPath: '/api/public/wc-matches'
+      preLoaderRoute: typeof ApiPublicWcMatchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SimulatorRoute: SimulatorRoute,
+  ApiPublicWcMatchesRoute: ApiPublicWcMatchesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
