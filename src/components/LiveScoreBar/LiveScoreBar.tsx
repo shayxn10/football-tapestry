@@ -12,49 +12,84 @@ function shortName(name: string): { code: string; flag: string } {
   return { code: name.slice(0, 3).toUpperCase(), flag: "🏳️" };
 }
 
+const FONT_DISPLAY = "Bebas Neue, sans-serif";
+const FONT_BODY = "DM Sans, sans-serif";
+
 function MatchPill({ f }: { f: ApiFixture }) {
   const home = shortName(f.teams.home.name);
   const away = shortName(f.teams.away.name);
   const status = f.fixture.status.short;
-  const isLive = ["1H","2H","HT","ET","P","LIVE"].includes(status);
-  const isDone = ["FT","AET","PEN"].includes(status);
+  const isLive = ["1H", "2H", "HT", "ET", "P", "LIVE"].includes(status);
+  const isDone = ["FT", "AET", "PEN"].includes(status);
   const time = new Date(f.fixture.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const elapsed = f.fixture.status.elapsed;
+
+  const codeStyle: React.CSSProperties = { fontFamily: FONT_BODY, fontSize: 12, color: "#8899aa", fontWeight: 600 };
+  const scoreStyle: React.CSSProperties = { fontFamily: FONT_DISPLAY, fontSize: 15, letterSpacing: "0.04em" };
 
   if (isLive) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[12px] whitespace-nowrap"
-        style={{ background: "rgba(230,57,70,0.12)", borderLeft: "2px solid #e63946" }}>
-        <span className="inline-flex items-center gap-1 text-[#e63946] font-bold" style={{ fontFamily: "Bebas Neue, sans-serif", letterSpacing: "0.1em" }}>
-          <span className="h-1.5 w-1.5 rounded-full bg-[#e63946] animate-pulse" />LIVE
+      <span
+        className="inline-flex items-center gap-2 whitespace-nowrap"
+        style={{
+          padding: "6px 16px",
+          background: "rgba(230,57,70,0.08)",
+          borderLeft: "2px solid #e63946",
+        }}
+      >
+        <span className="inline-flex items-center gap-1" style={{ fontFamily: FONT_DISPLAY, color: "#e63946", letterSpacing: "0.12em", fontSize: 12 }}>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#e63946]" style={{ animation: "livePulse 1.5s ease-in-out infinite" }} />
+          LIVE
         </span>
-        <span>{home.flag}</span>
-        <span className="hidden sm:inline text-white font-semibold">{home.code}</span>
-        <span className="font-mono text-[#f5a623] font-bold">{f.goals.home ?? 0}-{f.goals.away ?? 0}</span>
-        <span className="hidden sm:inline text-white font-semibold">{away.code}</span>
-        <span>{away.flag}</span>
+        <span style={{ fontSize: 14 }}>{home.flag}</span>
+        <span style={codeStyle}>{home.code}</span>
+        <span style={{ ...scoreStyle, color: "#f0f4ff" }}>
+          {f.goals.home ?? 0} - {f.goals.away ?? 0}
+        </span>
+        <span style={codeStyle}>{away.code}</span>
+        <span style={{ fontSize: 14 }}>{away.flag}</span>
+        {elapsed != null && (
+          <span style={{ fontFamily: FONT_BODY, fontSize: 10, color: "#f5a623" }}>{elapsed}'</span>
+        )}
       </span>
     );
   }
+
   if (isDone) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] whitespace-nowrap text-[#8899aa]">
-        <span className="text-[#445566]">✓</span>
-        <span>{home.flag}</span>
-        <span className="hidden sm:inline">{home.code}</span>
-        <span className="font-mono">{f.goals.home ?? 0}-{f.goals.away ?? 0}</span>
-        <span className="hidden sm:inline">{away.code}</span>
-        <span>{away.flag}</span>
+      <span
+        className="inline-flex items-center gap-2 whitespace-nowrap"
+        style={{
+          padding: "6px 16px",
+          background: "rgba(34,197,94,0.06)",
+          borderLeft: "2px solid #22c55e",
+        }}
+      >
+        <span style={{ color: "#22c55e", fontSize: 11 }}>✓</span>
+        <span style={{ fontSize: 14 }}>{home.flag}</span>
+        <span style={codeStyle}>{home.code}</span>
+        <span style={{ ...scoreStyle, color: "#f0f4ff", fontWeight: 700 }}>
+          {f.goals.home ?? 0} - {f.goals.away ?? 0}
+        </span>
+        <span style={codeStyle}>{away.code}</span>
+        <span style={{ fontSize: 14 }}>{away.flag}</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 10, color: "#445566", letterSpacing: "0.1em" }}>FT</span>
       </span>
     );
   }
+
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] whitespace-nowrap text-[#8899aa]">
-      <span className="text-[#f5a623]" style={{ fontFamily: "Bebas Neue, sans-serif" }}>{time}</span>
-      <span>{home.flag}</span>
-      <span className="hidden sm:inline">{home.code}</span>
-      <span className="text-[#445566]">vs</span>
-      <span className="hidden sm:inline">{away.code}</span>
-      <span>{away.flag}</span>
+    <span
+      className="inline-flex items-center gap-2 whitespace-nowrap"
+      style={{ padding: "6px 16px" }}
+    >
+      <span style={{ color: "#f5a623", fontSize: 10 }}>🕐</span>
+      <span style={{ fontFamily: FONT_DISPLAY, color: "#f5a623", fontSize: 13, letterSpacing: "0.05em" }}>{time}</span>
+      <span style={{ fontSize: 14 }}>{home.flag}</span>
+      <span style={codeStyle}>{home.code}</span>
+      <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: "#445566" }}>vs</span>
+      <span style={codeStyle}>{away.code}</span>
+      <span style={{ fontSize: 14 }}>{away.flag}</span>
     </span>
   );
 }
@@ -77,27 +112,25 @@ function useCountdown() {
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <span className="inline-flex items-baseline gap-1">
-      <span style={{ fontFamily: "Bebas Neue, sans-serif", color: "#f5a623", fontSize: "13px", letterSpacing: "0.05em" }}>
-        {value}
-      </span>
-      <span style={{ fontFamily: "DM Sans, sans-serif", color: "#8899aa", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-        {label}
-      </span>
+      <span style={{ fontFamily: FONT_DISPLAY, color: "#f5a623", fontSize: 13, letterSpacing: "0.05em" }}>{value}</span>
+      <span style={{ fontFamily: FONT_BODY, color: "#8899aa", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</span>
     </span>
   );
 }
 
 const Sep = () => <span className="mx-2 text-[#445566]">·</span>;
-const Bar = () => <span className="mx-3 inline-block w-px h-3 bg-[#1f2d45] align-middle" />;
+const Divider = () => (
+  <span aria-hidden="true" style={{ display: "inline-block", width: 1, height: 16, background: "#1e2d42", margin: "0 8px", verticalAlign: "middle" }} />
+);
 
 function PreContent({ cd, isMobile }: { cd: ReturnType<typeof useCountdown>; isMobile: boolean }) {
   if (isMobile) {
     return (
-      <span className="inline-flex items-center gap-1.5 whitespace-nowrap" style={{ fontFamily: "DM Sans, sans-serif", fontSize: "11px", color: "#fff" }}>
-        <span style={{ color: "#f5a623", fontFamily: "Bebas Neue, sans-serif", letterSpacing: "0.1em" }}>KICKOFF</span>
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap" style={{ fontFamily: FONT_BODY, fontSize: 11, color: "#fff", padding: "6px 16px" }}>
+        <span style={{ color: "#f5a623", fontFamily: FONT_DISPLAY, letterSpacing: "0.1em" }}>KICKOFF</span>
         <CountdownUnit value={cd.days} label="D" />
         <CountdownUnit value={cd.hours} label="H" />
-        <Bar />
+        <Divider />
         <span>🇲🇽 MEX</span>
         <span className="text-[#445566]">vs</span>
         <span>🇿🇦 RSA</span>
@@ -105,23 +138,23 @@ function PreContent({ cd, isMobile }: { cd: ReturnType<typeof useCountdown>; isM
     );
   }
   return (
-    <span className="inline-flex items-center whitespace-nowrap" style={{ fontFamily: "DM Sans, sans-serif", fontSize: "12px", color: "#fff", letterSpacing: "0.05em" }}>
-      <span style={{ color: "#f5a623", fontFamily: "Bebas Neue, sans-serif", letterSpacing: "0.15em" }}>KICKOFF IN</span>
+    <span className="inline-flex items-center whitespace-nowrap" style={{ fontFamily: FONT_BODY, fontSize: 12, color: "#fff", letterSpacing: "0.05em", padding: "6px 16px" }}>
+      <span style={{ color: "#f5a623", fontFamily: FONT_DISPLAY, letterSpacing: "0.15em" }}>KICKOFF IN</span>
       <Sep />
       <CountdownUnit value={cd.days} label="D" />
       <Sep />
       <CountdownUnit value={cd.hours} label="H" />
       <Sep />
       <CountdownUnit value={cd.minutes} label="M" />
-      <Bar />
-      <span style={{ color: "#f5a623", fontFamily: "Bebas Neue, sans-serif", letterSpacing: "0.15em" }}>OPENING MATCH</span>
+      <Divider />
+      <span style={{ color: "#f5a623", fontFamily: FONT_DISPLAY, letterSpacing: "0.15em" }}>OPENING MATCH</span>
       <Sep />
       <span>🇲🇽</span>
       <span className="ml-1.5 font-semibold">MEXICO</span>
       <span className="mx-2 text-[#8899aa]">vs</span>
       <span className="font-semibold">SOUTH AFRICA</span>
       <span className="ml-1.5">🇿🇦</span>
-      <Bar />
+      <Divider />
       <span className="text-[#8899aa]">JUNE 11, 2026</span>
       <Sep />
       <span className="text-[#8899aa]">ESTADIO AZTECA</span>
@@ -146,19 +179,19 @@ export function LiveScoreBar() {
     content = <PreContent cd={cd} isMobile={isMobile} />;
   } else if (phase === "post") {
     content = (
-      <span className="whitespace-nowrap" style={{ fontFamily: "DM Sans, sans-serif", fontSize: "12px", color: "#f5a623" }}>
+      <span className="whitespace-nowrap" style={{ fontFamily: FONT_BODY, fontSize: 12, color: "#f5a623", padding: "6px 16px" }}>
         🏆 World Cup 2026 has concluded · Thanks for following
       </span>
     );
   } else if (fixtures.length === 0) {
-    content = <span className="text-[#445566] text-[12px] px-2 whitespace-nowrap">No matches today</span>;
+    content = <span className="text-[#445566] text-[12px] whitespace-nowrap" style={{ padding: "6px 16px" }}>No matches today</span>;
   } else {
     content = (
       <span className="inline-flex items-center">
         {fixtures.map((f, i) => (
           <span key={f.fixture.id} className="inline-flex items-center">
             <MatchPill f={f} />
-            {i < fixtures.length - 1 && <Bar />}
+            {i < fixtures.length - 1 && <Divider />}
           </span>
         ))}
       </span>
@@ -169,30 +202,23 @@ export function LiveScoreBar() {
     <div
       className="fixed top-0 left-0 w-full z-[2000] flex items-stretch overflow-hidden"
       style={{
-        height: "var(--ticker-h, 36px)",
+        height: "var(--ticker-h, 38px)",
         background: "#000000",
-        borderBottom: "1px solid rgba(245,166,35,0.4)",
+        borderBottom: "1px solid rgba(245,166,35,0.2)",
       }}
     >
-      {/* Warm gold left wash overlay */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: "linear-gradient(to right, rgba(245,166,35,0.08) 0%, transparent 300px)" }}
-      />
-
       {/* Left anchor (static) */}
       <div className="relative flex items-center pl-3 sm:pl-4 pr-2 sm:pr-3 flex-shrink-0">
-        <span className="inline-block rounded-full bg-[#e63946] mr-1.5" style={{ width: 6, height: 6, animation: "livePulse 1.5s ease-in-out infinite" }} />
-        <span style={{ fontFamily: "Bebas Neue, sans-serif", letterSpacing: "0.2em", color: "#f5a623", fontSize: "12px" }}>
+        <span style={{ fontFamily: FONT_DISPLAY, letterSpacing: "0.2em", color: "#f5a623", fontSize: 12 }}>
           <span className="sm:hidden">⚽ WC26</span>
-          <span className="hidden sm:inline">⚽ WORLD CUP 2026</span>
+          <span className="hidden sm:inline">⚽ WC 2026</span>
         </span>
-        <span className="inline-block ml-3" style={{ width: 1, height: 18, background: "rgba(245,166,35,0.3)" }} />
+        <span aria-hidden="true" style={{ display: "inline-block", width: 1, height: 18, background: "#1e2d42", marginLeft: 12 }} />
       </div>
 
       {/* Scrolling content */}
       <div className="relative flex-1 overflow-hidden ticker-wrap">
-        <div className="ticker-track inline-flex items-center">
+        <div className="ticker-track inline-flex items-center h-full">
           <span className="inline-flex items-center pr-8">{content}</span>
           <span className="inline-flex items-center pr-8" aria-hidden="true">{content}</span>
         </div>
@@ -215,7 +241,7 @@ export function LiveScoreBar() {
           .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
         }
         @media (max-width: 767px) {
-          :root { --ticker-h: 32px; }
+          :root { --ticker-h: 36px; }
         }
       `}</style>
     </div>
